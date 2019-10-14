@@ -1,7 +1,6 @@
-#Front-end Template 2019
+# Aviation Data Visualization
+Visualizing idea 1 - accident rate ranking of top providers over the years
 ----------------------------------
-## Note:
-- Starting point with only SCSS, PostCSS dependencies
 
 ## Implementation Steps
 - development command: `npm run dev`
