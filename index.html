@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+		<meta http-equiv="expires" content="0">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<title></title>
+		<link rel="icon" href="../favicon.ico" type="image/x-icon">
+	</head>
+	<body class="loading">
+		<canvas id="canvas"></canvas>
+		
+	</body>
+
+	<!-- Shaders -->
+<script id="roadVertexShader" type="x-shader/x-vertex">
+    varying vec2 vUv;
+    varying vec4 vClipSpace;
+
+    void main() {
+
+        vUv = uv;
+
+        vClipSpace = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        gl_Position = vClipSpace;
+
+    }
+</script>
+
+<script id="roadFragmentShader" type="x-shader/x-fragment">
+    uniform sampler2D uRoadTexture;
+    uniform sampler2D uReflectionTexture;
+    uniform float uRepeatY;
+
+    varying vec2 vUv;
+    varying vec4 vClipSpace;
+
+    void main() {
+
+        // normalized device space
+        vec2 ndc = (vClipSpace.xy / vClipSpace.w) / 2.0 + 0.5;
+        vec2 reflectTextureCoords = vec2(ndc.x, 1.0 - ndc.y);
+
+        vec4 reflectionColor = texture2D(uReflectionTexture, reflectTextureCoords);
+        vec3 mixedColor = mix(reflectionColor.rgb, vec3(0.0, 0.0, 0.0), 0.7);
+
+        vec2 roadPosition = vec2(vUv.x, vUv.y * uRepeatY);
+        vec4 roadColor = texture2D(uRoadTexture, roadPosition);
+
+        vec3 color = roadColor.rgb + mixedColor;
+
+        gl_FragColor = vec4(color.rgb, 1.0);
+
+    }
+</script>
+</html>
