@@ -3,14 +3,13 @@ import { retrieveWindowWidth,
          checkIfDesktopToMobile, 
          checkIfMobileToDesktop, 
          testPlatform } from './utils';
-import Ranking from './Ranking';
+import Home from './home';
 
 
 const widthLimit = 960;
 let platform;
 let winW, winH;
-let ranking;
-
+let home;
 
 window.addEventListener('load', (event) => {
     platform = testPlatform();
@@ -19,8 +18,8 @@ window.addEventListener('load', (event) => {
     console.log('=== On Init ===: (' + winW + ", " + winH + ")");
 
     // ================ Main content goes here =================
-    ranking = new Ranking();
-    ranking.init(winW, winH);
+    home = new Home();
+    home.init();
     // ================ Main content ends here =================
 
     if (winW <= widthLimit) {
@@ -40,7 +39,7 @@ window.addEventListener('resize', (event) => {
     
     console.log('=== On Resize ===: (' + newWinW + ", " + newWinH + ")");
     // ================ Resize calls go here =================
-    ranking.onResize(winW, winH);
+    home.resize();
     // ================ Resize calls go here =================
 
     if (ifDToM || ifMToD) {
