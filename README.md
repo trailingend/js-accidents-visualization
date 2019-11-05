@@ -1,6 +1,7 @@
 # Aviation Data Visualization
 
-Visualizing idea 1 - accident rate ranking of top providers over the years
+Home - Occurances Stats in the Past 20 Years
+Details - Annual Details in Event/ Aircraft Modes
 
 ## Implementation Steps
 - development command: `npm run dev`
