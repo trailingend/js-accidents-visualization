@@ -13,11 +13,18 @@ class Home {
 
         this.mapChart = undefined;
         this.lineChart = undefined;
+        this.fataSeries = undefined;
+        this.injuSeries = undefined;
+        this.safeSeries = undefined;
+        this.occuSeries = undefined;
         this.mapImageSeries = undefined;
         this.sliderContainer = undefined;
         this.slider = undefined;
         this.sliderAnimation = undefined;
         this.playButton = undefined;
+
+        this.numYears = home_line_data.length;
+        this.prevYear = 1998;
     }
 
     init(winW, winH) {
@@ -120,51 +127,51 @@ class Home {
         valueAxis.renderer.grid.template.stroke = am4core.color("#ffffff");
         valueAxis.renderer.inside = false;
 
-        let fataSeries = this.lineChart.series.push(new am4charts.ColumnSeries());
-        fataSeries.dataFields.dateX = "year";
-        fataSeries.dataFields.valueY = "fata";
-        fataSeries.name = "Fatalities";
-        fataSeries.fill = am4core.color("#FF5733");
-        fataSeries.fillOpacity = 0.7;
-        fataSeries.strokeWidth = 0;
-        fataSeries.tooltipText = "{name}: {valueY}";
+        this.fataSeries = this.lineChart.series.push(new am4charts.ColumnSeries());
+        this.fataSeries.dataFields.dateX = "year";
+        this.fataSeries.dataFields.valueY = "fata";
+        this.fataSeries.name = "Fatalities";
+        this.fataSeries.fill = am4core.color("#FF5733");
+        this.fataSeries.fillOpacity = 0.7;
+        this.fataSeries.strokeWidth = 0;
+        this.fataSeries.tooltipText = "{name}: {valueY}";
 
-        let injuSeries = this.lineChart.series.push(new am4charts.ColumnSeries());
-        injuSeries.dataFields.dateX = "year";
-        injuSeries.dataFields.valueY = "inju";
-        injuSeries.name = "Injuries";
-        injuSeries.fill = am4core.color("#FFC300");
-        injuSeries.fillOpacity = 0.7;
-        injuSeries.strokeWidth = 0;
-        injuSeries.tooltipText = "{name}: {valueY}";
-        injuSeries.stacked = true;
+        this.injuSeries = this.lineChart.series.push(new am4charts.ColumnSeries());
+        this.injuSeries.dataFields.dateX = "year";
+        this.injuSeries.dataFields.valueY = "inju";
+        this.injuSeries.name = "Injuries";
+        this.injuSeries.fill = am4core.color("#FFC300");
+        this.injuSeries.fillOpacity = 0.7;
+        this.injuSeries.strokeWidth = 0;
+        this.injuSeries.tooltipText = "{name}: {valueY}";
+        this.injuSeries.stacked = true;
 
-        var safeSeries = this.lineChart.series.push(new am4charts.ColumnSeries());
-        safeSeries.dataFields.dateX = "year";
-        safeSeries.dataFields.valueY = "safe";
-        safeSeries.name = "No Damage";
-        safeSeries.fill = am4core.color("#AED6F1");
-        safeSeries.fillOpacity = 0.2;
-        safeSeries.strokeWidth = 0;
-        safeSeries.stacked = true;
+        this.safeSeries = this.lineChart.series.push(new am4charts.ColumnSeries());
+        this.safeSeries.dataFields.dateX = "year";
+        this.safeSeries.dataFields.valueY = "safe";
+        this.safeSeries.name = "No Damage";
+        this.safeSeries.fill = am4core.color("#AED6F1");
+        this.safeSeries.fillOpacity = 0.2;
+        this.safeSeries.strokeWidth = 0;
+        this.safeSeries.stacked = true;
 
-        let occuSeries = this.lineChart.series.push(new am4charts.LineSeries());
-        occuSeries.name = "Occurance";
-        occuSeries.dataFields.dateX = "year";
-        occuSeries.dataFields.valueY = "occu";
-        occuSeries.stroke = am4core.color("#BB8FCE");
-        occuSeries.strokeWidth = 2;
-        occuSeries.tensionX = 1;
-        occuSeries.tensionY = 1;
-        occuSeries.tooltipText = "{name}: {valueY}";
-        occuSeries.tooltip.background.fillOpacity = 0;
-        occuSeries.tooltip.autoTextColor = false;
-        occuSeries.tooltip.label.fill = am4core.color("#ffffff");
-        occuSeries.tooltip.filters.clear();
-        occuSeries.tooltip.pointerOrientation = "vertical";
-        occuSeries.bullets.push(new am4charts.CircleBullet());
-        occuSeries.bullets.fill = am4core.color("#BB8FCE");
-        occuSeries.bullets.stroke = am4core.color("#BB8FCE");
+        this.occuSeries = this.lineChart.series.push(new am4charts.LineSeries());
+        this.occuSeries.name = "Occurance";
+        this.occuSeries.dataFields.dateX = "year";
+        this.occuSeries.dataFields.valueY = "occu";
+        this.occuSeries.stroke = am4core.color("#BB8FCE");
+        this.occuSeries.strokeWidth = 2;
+        this.occuSeries.tensionX = 1;
+        this.occuSeries.tensionY = 1;
+        this.occuSeries.tooltipText = "{name}: {valueY}";
+        this.occuSeries.tooltip.background.fillOpacity = 0;
+        this.occuSeries.tooltip.autoTextColor = false;
+        this.occuSeries.tooltip.label.fill = am4core.color("#ffffff");
+        this.occuSeries.tooltip.filters.clear();
+        this.occuSeries.tooltip.pointerOrientation = "vertical";
+        let bullets = this.occuSeries.bullets.push(new am4charts.CircleBullet());
+        bullets.circle.fill = am4core.color("#BB8FCE");
+        bullets.circle.stroke = am4core.color("#BB8FCE");
 
         this.lineChart.cursor = new am4charts.XYCursor();
         this.lineChart.cursor.behavior = "none";
@@ -192,30 +199,34 @@ class Home {
     
         this.playButton = this.sliderContainer.createChild(am4core.PlayButton);
         this.playButton.valign = "middle";
-        // this.playButton.events.on("toggled", (event) => {
-        //     if (event.target.isActive) {
-        //         this.play();
-        //     } else {
-        //         this.stop();
-        //     }
-        // });
         
         this.slider = this.sliderContainer.createChild(am4core.Slider);
         this.slider.valign = "middle";
-        this.slider.margin(0, 0, 0, 0);
-        this.slider.background.opacity = 1;
+        this.slider.margin(0, 5, 0, 15);
         
         this.slider.stroke = am4core.color("#ffffff");
-        this.slider.strokeWidth = 3;
+        this.slider.strokeWidth = 0.2;
         this.slider.fill = am4core.color("#ffffff");
         this.slider.fillOpacity = 1;
-        this.slider.marginLeft = 30;
+        // this.slider.marginLeft = 10;
+        // this.slider.marginLeft = 10;
         this.slider.height = 15;
         
-        // this.addSliderEventListener();
-        // this.addSliderAnimationEventListener();
+        this.addButtonEventListener();
+        this.addSliderEventListener();
+        this.addSliderAnimationEventListener();
 
         this.startAnimation();
+    }
+
+    addButtonEventListener() {
+        this.playButton.events.on("toggled", (event) => {
+            if (event.target.isActive) {
+                this.play();
+            } else {
+                this.stop();
+            }
+        });
     }
 
     addSliderEventListener() {
@@ -262,94 +273,25 @@ class Home {
     }
 
     update() {
-        let time = new Date(startTime + (endTime - startTime) * slider.start).getTime();
-        let roundedTime = am4core.time.round(new Date(time), "minute").getTime();
+        let currCount = Math.floor(this.slider.start * this.numYears);
+        let currYear = Math.floor(this.slider.start * this.numYears) + 1999;
 
-        if (roundedTime != currentTime) {
-            currentTime = roundedTime;
-            let count = lineSeries.dataItems.length;
-            if (slider) {
-                for (var i = 0; i < count; i++) {
-                    let dataItem = lineSeries.dataItems.getIndex(i);
+        if (currYear != this.prevYear && currCount < this.numYears) {
+            console.log(currYear + " " + currCount + " " + this.numYears)
 
-                    if (i < slider.start * count) {
-                        dataItem.show(500, 0, ["valueY"]);
+            this.prevYear = currYear;
+            if (this.slider) {
+                for (let i = 0; i < this.currCount; i++) {
+                    let occuItem = this.occuSeries.dataItems.getIndex(i);
+                    if (i < currCount) {
+                        occuItem.show(500, 0, ["valueY"]);
                     } else {
-                        dataItem.hide(500, 0, 0, ["valueY"]);
+                        occuItem.hide(500, 0, 0, ["valueY"]);
                     }
                 }
+                
+                this.mapImageSeries.data = home_map_data[currCount].images;
             }
-        }
-
-        // add some drama by zooming the map
-        let bombFlyDuration = cancelTime - launchTime;
-        let bombPosition = (time - launchTime) / bombFlyDuration;
-        bombPosition = Math.min(1, bombPosition);
-        bombPosition = Math.max(0, bombPosition);
-
-        let oPoint = line.positionToPoint(bombPosition);
-        let geoPoint = mapChart.seriesPointToGeo(oPoint);
-        bomb.latitude = geoPoint.latitude;
-        bomb.longitude = geoPoint.longitude;
-        bomb.rotation = oPoint.angle + 90;
-
-        if (bombPosition > 0 && bombPosition < 1) {
-            bomb.opacity = 1;
-        }
-
-        if ((bombPosition >= 1 && !exploded)) {
-            bomb.opacity = 0;
-            bang.opacity = 1;
-            bang.animate({ property: "opacity", to: 0, from: 1 }, 1000);
-            exploded = true;
-        }
-
-        if (exploded && bombPosition < 1) {
-            exploded = false;
-            bang.opacity = 0;
-            bomb.opacity = 1;
-        }
-
-        if (bombPosition <= 0.001) {
-            bomb.opacity = 0;
-        }
-
-        if (time > alertTime && time < cancelTime) {
-            if (!bulletAlertCircle.visible) {
-                bulletAlertCircle.visible = true;
-                bulletAlertAnimation.resume();
-            }
-        }
-        else {
-            bulletAlertCircle.visible = false;
-        }
-
-        for (var i = 0; i < honoluluTexts.length; i++) {
-            let honoluluText = honoluluTexts[i];
-            if (time > honoluluText.time) {
-                honoluluCircle.tooltipText = honoluluText.text;
-            }
-        }
-
-        if (honoluluCircle.tooltipText) {
-            honoluluCircle.showTooltip();
-        }
-        else {
-            honoluluCircle.hideTooltip();
-        }
-
-        for (var i = 0; i < pyongyangTexts.length; i++) {
-            let pyongyangText = pyongyangTexts[i];
-            if (time > pyongyangText.time) {
-                pyongyangCircle.tooltipText = pyongyangText.text;
-            }
-        }
-
-        if (pyongyangCircle.tooltipText) {
-            pyongyangCircle.showTooltip();
-        }
-        else {
-            pyongyangCircle.hideTooltip();
         }
     }
 
