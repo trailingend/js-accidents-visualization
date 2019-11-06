@@ -3,7 +3,22 @@
 @import "preset";
 
 #home-chart-ctnr {
+    position: relative;
+    display: none;
+    width: 100%;
+    width: 100vw;
+    max-width: 100%;
+    min-width: 500px;
+    height: 100%;
+    height: 100vh;
+    min-height: 500px;
+    background-color:#121212;
+}
+
+#occu-chart-ctnr {
+    position: relative;
     display: block;
+    top: 0;
     width: 100%;
     width: 100vw;
     max-width: 100%;

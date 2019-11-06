@@ -3,8 +3,8 @@ import * as am4charts from "@amcharts/amcharts4/charts";
 import * as am4maps from "@amcharts/amcharts4/maps";
 import am4geodata_continentsLow from "@amcharts/amcharts4-geodata/continentsLow";
 
-import {home_line_data} from "./data";
-import {home_map_data} from "./map_data";
+import {home_line_data} from "./data_line";
+import {home_map_data} from "./data_map";
 
 
 class Home {
@@ -228,7 +228,8 @@ class Home {
         this.addSliderEventListener();
         this.addSliderAnimationEventListener();
 
-        this.startAnimation();
+        // TODO turn it on
+        // this.startAnimation();
     }
 
     addButtonEventListener() {
