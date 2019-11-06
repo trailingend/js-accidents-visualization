@@ -3,7 +3,9 @@ import * as am4charts from "@amcharts/amcharts4/charts";
 import * as am4maps from "@amcharts/amcharts4/maps";
 import am4geodata_continentsLow from "@amcharts/amcharts4-geodata/continentsLow";
 
-import {home_line_data, home_map_data} from "./data";
+import {home_line_data} from "./data";
+import {home_map_data} from "./map_data";
+
 
 class Home {
     constructor() {
@@ -72,7 +74,7 @@ class Home {
         mapImageSeriesTemplate.propertyFields.longitude = "longitude";
         let circle = mapImageSeriesTemplate.createChild(am4core.Circle);
         circle.radius = 4;
-        circle.fill = am4core.color("#B27799");
+        circle.fill = am4core.color("#AED6F1");
         circle.stroke = am4core.color("#FFFFFF");
         circle.strokeWidth = 2;
         circle.nonScaling = true;
@@ -84,7 +86,7 @@ class Home {
     initLineChart() {
         this.lineChart = this.container.createChild(am4charts.XYChart);
         this.lineChart.padding(0, 50, 50, 50);
-        this.lineChart.height = 350;
+        this.lineChart.height = 450;
         this.lineChart.valign = "bottom";
         this.lineChart.data = home_line_data;
         this.lineChart.dateFormatter.inputDateFormat = "yyyy";
@@ -116,8 +118,7 @@ class Home {
         let valueAxis = this.lineChart.yAxes.push(new am4charts.ValueAxis());
         valueAxis.renderer.ticks.template.disabled = true;
         valueAxis.min = 0;
-        valueAxis.max = 50;
-        valueAxis.renderer.minGridDistance = 20;
+        valueAxis.max = 900;
         valueAxis.renderer.grid.template.disabled = true;
         valueAxis.renderer.line.disabled = true;
         valueAxis.tooltip.disabled = true;
@@ -125,7 +126,18 @@ class Home {
         valueAxis.renderer.labels.template.fillOpacity = 0.4;
         valueAxis.renderer.labels.template.fill = am4core.color("#ffffff");
         valueAxis.renderer.grid.template.stroke = am4core.color("#ffffff");
+        valueAxis.renderer.minGridDistance = 15;
         valueAxis.renderer.inside = false;
+
+        let axisBreak = valueAxis.axisBreaks.create();
+        axisBreak.startValue = 50;
+        axisBreak.endValue = 540;
+        axisBreak.breakSize = 0.02;
+        let hoverState = axisBreak.states.create("hover");
+        hoverState.properties.breakSize = 1;
+        hoverState.properties.opacity = 0.1;
+        hoverState.transitionDuration = 1500;
+        axisBreak.defaultState.transitionDuration = 1000;
 
         this.fataSeries = this.lineChart.series.push(new am4charts.ColumnSeries());
         this.fataSeries.dataFields.dateX = "year";
