@@ -4,13 +4,13 @@ import { retrieveWindowWidth,
          checkIfMobileToDesktop, 
          testPlatform } from './utils';
 import Home from './home';
-import Occurances from './occurances';
+import Detail from './detail';
 
 
 const widthLimit = 960;
 let platform;
 let winW, winH;
-let home, occurances;
+let home, detail;
 
 window.addEventListener('load', (event) => {
     platform = testPlatform();
@@ -22,8 +22,8 @@ window.addEventListener('load', (event) => {
     home = new Home();
     home.init();
 
-    occurances = new Occurances();
-    occurances.init();
+    detail = new Detail();
+    detail.init();
     // ================ Main content ends here =================
 
     if (winW <= widthLimit) {
@@ -44,7 +44,7 @@ window.addEventListener('resize', (event) => {
     console.log('=== On Resize ===: (' + newWinW + ", " + newWinH + ")");
     // ================ Resize calls go here =================
     home.resize();
-    occurances.resize();
+    detail.resize();
     // ================ Resize calls go here =================
 
     if (ifDToM || ifMToD) {

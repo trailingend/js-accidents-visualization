@@ -1,14 +1,19 @@
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import * as am4maps from "@amcharts/amcharts4/maps";
+import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import am4geodata_continentsLow from "@amcharts/amcharts4-geodata/continentsLow";
 
 import {home_line_data} from "./data_line";
 import {home_map_data} from "./data_map";
 
+am4core.ready(() => {
+    am4core.useTheme(am4themes_animated);
+});
 
 class Home {
     constructor() {
+        
         this.container = am4core.create("home-chart-ctnr", am4core.Container);
         this.container.width = am4core.percent(100);
         this.container.height = am4core.percent(100);
