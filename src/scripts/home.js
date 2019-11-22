@@ -79,11 +79,20 @@ class Home {
         mapImageSeriesTemplate.propertyFields.longitude = "longitude";
         let circle = mapImageSeriesTemplate.createChild(am4core.Circle);
         circle.radius = 4;
+        circle.fillOpacity = 0.7;
         circle.fill = am4core.color("#AED6F1");
         circle.stroke = am4core.color("#FFFFFF");
-        circle.strokeWidth = 2;
+        circle.strokeWidth = 0;
         circle.nonScaling = true;
         circle.tooltipText = "{title}";
+
+        // this.mapImageSeries.push({
+        //     "target": circle,
+        //     "property": "radius",
+        //     "min": 4,
+        //     "max": 30,
+        //     "dataField": "4"
+        //   })
 
         this.mapImageSeries.data = home_map_data[0].images;
     }
@@ -295,19 +304,18 @@ class Home {
         let currYear = Math.floor(this.slider.start * this.numYears) + 1999;
 
         if (currYear != this.prevYear && currCount < this.numYears) {
-            console.log(currYear + " " + currCount + " " + this.numYears)
+            console.log(currYear + " " + currCount + " " + this.numYears);
 
             this.prevYear = currYear;
             if (this.slider) {
-                for (let i = 0; i < this.currCount; i++) {
-                    let occuItem = this.occuSeries.dataItems.getIndex(i);
-                    if (i < currCount) {
-                        occuItem.show(500, 0, ["valueY"]);
-                    } else {
-                        occuItem.hide(500, 0, 0, ["valueY"]);
-                    }
-                }
-                
+                // for (let i = 0; i < this.currCount; i++) {
+                //     let occuItem = this.occuSeries.dataItems.getIndex(i);
+                //     if (i < currCount) {
+                //         occuItem.show(500, 0, ["valueY"]);
+                //     } else {
+                //         occuItem.hide(500, 0, 0, ["valueY"]);
+                //     }
+                // }
                 this.mapImageSeries.data = home_map_data[currCount].images;
             }
         }

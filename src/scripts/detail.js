@@ -16,6 +16,9 @@ class Detail {
         this.radarColumn = undefined;
         this.reasonAxis = undefined;
         this.colorSet = new am4core.ColorSet();
+        // this.colorSet.list = ["#388E3C", "#FBC02D", "#0288d1", "#F44336", "#8E24AA"].map((color) => {
+        //     return new am4core.color(color);
+        // });
 
     }
 
@@ -37,8 +40,6 @@ class Detail {
         yearLabel.fill = am4core.color("#673AB7");
         yearLabel.fontSize = 30;
         yearLabel.text = String("yo");
-
-        // this.radarChart.data = occu_data[0].occurances;
        
         // category axis
         this.reasonAxis = this.radarChart.xAxes.push(new am4charts.CategoryAxis());
@@ -60,14 +61,15 @@ class Detail {
         reasonAxisRenderer.ticks.template.disabled = true;
         reasonAxisRenderer.axisFills.template.disabled = true;
         reasonAxisRenderer.line.disabled = true;
-
         reasonAxisRenderer.tooltipLocation = 0.5;
+        reasonAxisRenderer.labels.template.fill = am4core.color("#ffffff");
+        reasonAxisRenderer.grid.template.stroke = am4core.color("#ffffff");
         this.reasonAxis.tooltip.defaultState.properties.opacity = 0;
 
         // value axis
         var valueAxis = this.radarChart.yAxes.push(new am4charts.ValueAxis());
-        valueAxis.min = -3;
-        valueAxis.max = 6;
+        valueAxis.min = 0;
+        valueAxis.max = 8;
         valueAxis.strictMinMax = true;
         valueAxis.tooltip.defaultState.properties.opacity = 0;
         valueAxis.tooltip.animationDuration = 0;
@@ -78,54 +80,58 @@ class Detail {
         valueAxisRenderer.axisFills.template.disabled = true;
         valueAxisRenderer.ticks.template.disabled = true;
         valueAxisRenderer.minGridDistance = 20;
-        valueAxisRenderer.grid.template.strokeOpacity = 0.05;
+        valueAxisRenderer.grid.template.strokeOpacity = 0.2;
+        valueAxisRenderer.labels.template.fill = am4core.color("#ffffff");
+        valueAxisRenderer.grid.template.stroke = am4core.color("#ffffff");
 
         // series
-        this.radarColumn = this.radarChart.series.push(new am4charts.RadarColumnSeries());
-        this.radarColumn.columns.template.width = am4core.percent(90);
-        this.radarColumn.columns.template.strokeOpacity = 0;
-        this.radarColumn.dataFields.valueY = "count";
-        this.radarColumn.dataFields.categoryX = "reason";
-        this.radarColumn.tooltipText = "{categoryX}:{valueY.value}";
+        // this.radarColumn = this.radarChart.series.push(new am4charts.RadarColumnSeries());
+        // this.radarColumn.columns.template.width = am4core.percent(90);
+        // this.radarColumn.columns.template.strokeOpacity = 0;
+        // this.radarColumn.dataFields.valueY = "count";
+        // this.radarColumn.dataFields.categoryX = "reason";
+        // this.radarColumn.tooltipText = "{categoryX}:{valueY.value}";
+
+        let dataSeries = this.radarChart.series.push(new am4charts.RadarSeries());
+        dataSeries.dataFields.categoryX = "reason";
+        dataSeries.dataFields.valueY = "count";
+        // dataSeries.dataFields.value = "inju";
+        dataSeries.name = "Injuries";
+        dataSeries.strokeOpacity = 0;
+        dataSeries.sequencedInterpolation = true;
+        dataSeries.sequencedInterpolationDelay = 10;
+        let dataBullets = dataSeries.bullets.push(new am4charts.CircleBullet());
+        dataBullets.circle.fill = am4core.color("#FFC300");
+        dataBullets.circle.fillOpacity = 0.5;
+        dataBullets.circle.stroke = am4core.color("#FFC300");
+        dataBullets.circle.propertyFields.radius = 4;
+        dataBullets.horizontalCenter = "middle";
+        dataBullets.verticalCenter = "middle";
 
         // this makes columns to be of a different color, depending on value
-        this.radarColumn.heatRules.push({ 
-            target: this.radarColumn.columns.template, 
-            property: "fill", 
-            minValue: -3, 
-            maxValue: 6, 
-            min: am4core.color("#673AB7"), 
-            max: am4core.color("#F44336"), 
-            dataField: "valueY" 
-        });
+        // this.radarColumn.heatRules.push({ 
+        //     target: this.radarColumn.columns.template, 
+        //     property: "fill", 
+        //     minValue: -3, 
+        //     maxValue: 6, 
+        //     min: am4core.color("#673AB7"), 
+        //     max: am4core.color("#F44336"), 
+        //     dataField: "valueY" 
+        // });
 
         // cursor
-        // var cursor = new am4charts.RadarCursor();
-        // chart.cursor = cursor;
-        // cursor.behavior = "zoomX";
+        var cursor = new am4charts.RadarCursor();
+        this.radarChart.cursor = cursor;
+        cursor.behavior = "zoomX";
 
-        // cursor.xAxis = this.reasonAxis;
-        // cursor.innerRadius = am4core.percent(40);
-        // cursor.lineY.disabled = true;
+        cursor.xAxis = this.reasonAxis;
+        cursor.innerRadius = am4core.percent(40);
+        cursor.lineY.disabled = true;
 
-        // cursor.lineX.fillOpacity = 0.2;
-        // cursor.lineX.fill = am4core.color("#000000");
-        // cursor.lineX.strokeOpacity = 0;
-        // cursor.fullWidthLineX = true;
-
-        // year slider
-        // var yearSliderContainer = chart.createChild(am4core.Container);
-        // yearSliderContainer.layout = "vertical";
-        // yearSliderContainer.padding(0, 38, 0, 38);
-        // yearSliderContainer.width = am4core.percent(100);
-
-        // var yearSlider = yearSliderContainer.createChild(am4core.Slider);
-        // yearSlider.events.on("rangechanged", function () {
-        //     updateRadarData(startYear + Math.round(yearSlider.start * (endYear - startYear)));
-        // })
-        // yearSlider.orientation = "horizontal";
-        // yearSlider.start = 0.5;
-        // yearSlider.exportable = false;
+        cursor.lineX.fillOpacity = 0.2;
+        cursor.lineX.fill = am4core.color("#ffffff");
+        cursor.lineX.strokeOpacity = 0;
+        cursor.fullWidthLineX = true;
 
         this.radarChart.data = this.generateRadarData("YVR", "YYZ", 1999, "13", "Boeing", "Air Canada");
     }
@@ -151,14 +157,27 @@ class Detail {
                 first_reason = (first_reason === undefined) ? reas_name : first_reason;
                 last_reason = reas_name;            
                 const reasoned_data = target_data.filter((record)=>record["reas"] === reas_name);
-                const reasoned_count = reasoned_data.length;
-                data.push({
-                    "reason": reas_name,
-                    "count": reasoned_count
-                })
+                // const reasoned_count = reasoned_data.length;
+                if (reasoned_data.length === 0) {
+                    data.push({
+                        "reason": reas_name,
+                        "count": null,
+                        "summary": null
+                    });
+                } else {
+                    reasoned_data.forEach((point, index)=> {
+                        data.push({
+                            "reason": reas_name,
+                            "count": index + 1,
+                            "summary": point
+                        });
+                    });
+                }
             });
 
             this.createRange(cate_name, first_reason, last_reason, i);
+            this.createRange2(cate_name, first_reason, last_reason, i);
+
             first_reason = undefined;
             last_reason = undefined;
             i++;
@@ -172,18 +191,66 @@ class Detail {
         axisRange.text = name;
         axisRange.category = first_reason;
         axisRange.endCategory = last_reason;
-    
         // every 3rd color for a bigger contrast
         axisRange.axisFill.fill = this.colorSet.getIndex(index * 3);
         axisRange.grid.disabled = true;
         axisRange.label.interactionsEnabled = false;
         axisRange.label.bent = true;
+        axisRange.label.location = 0.5;
+        axisRange.label.fill = am4core.color("#ffffff");
+        axisRange.label.radius = 3;
+        axisRange.label.relativeRotation = 0;
     
         var axisFill = axisRange.axisFill;
-        axisFill.innerRadius = -0.001; // almost the same as 100%, we set it in pixels as later we animate this property to some pixel value
+        axisFill.innerRadius = -0.01; // almost the same as 100%, we set it in pixels as later we animate this property to some pixel value
         axisFill.radius = -20; // negative radius means it is calculated from max radius
         axisFill.disabled = false; // as regular fills are disabled, we need to enable this one
         axisFill.fillOpacity = 1;
+        axisFill.togglable = true;
+    
+        axisFill.showSystemTooltip = true;
+        axisFill.readerTitle = "click to zoom";
+        axisFill.cursorOverStyle = am4core.MouseCursorStyle.pointer;
+    
+        axisFill.events.on("hit", (event) => {
+            var dataItem = event.target.dataItem;
+            if (!event.target.isActive) {
+                this.reasonAxis.zoom({ start: 0, end: 1 });
+            } else {
+                this.reasonAxis.zoomToCategories(dataItem.category, dataItem.endCategory);
+            }
+        })
+    
+        // hover state
+        var hoverState = axisFill.states.create("hover");
+        hoverState.properties.innerRadius = -0.01;
+        hoverState.properties.radius = -25;
+    }
+
+    createRange2(name, first_reason, last_reason, index) {
+        var axisRange = this.reasonAxis.axisRanges.create();
+        axisRange.axisFill.interactionsEnabled = true;
+        axisRange.text = name;
+        axisRange.category = first_reason;
+        axisRange.endCategory = last_reason;
+    
+        // every 3rd color for a bigger contrast
+        axisRange.axisFill.fill = this.colorSet.getIndex(index * 2);
+        axisRange.grid.disabled = true;
+        axisRange.label.text = "TODO";
+        axisRange.label.inside = true;
+        axisRange.label.location = 0.5;
+        axisRange.label.interactionsEnabled = false;
+        axisRange.label.bent = true;
+        axisRange.label.fill = am4core.color("#ffffff");
+        axisRange.label.radius = 7;
+        axisRange.label.relativeRotation = 0;
+    
+        var axisFill = axisRange.axisFill;
+        axisFill.innerRadius = - 20; // almost the same as 100%, we set it in pixels as later we animate this property to some pixel value
+        axisFill.radius = -0.01; // negative radius means it is calculated from max radius
+        axisFill.disabled = false; // as regular fills are disabled, we need to enable this one
+        axisFill.fillOpacity = 0.8;
         axisFill.togglable = true;
     
         axisFill.showSystemTooltip = true;
@@ -202,14 +269,8 @@ class Detail {
     
         // hover state
         var hoverState = axisFill.states.create("hover");
-        hoverState.properties.innerRadius = -10;
-        hoverState.properties.radius = -25;
-    
-        var axisLabel = axisRange.label;
-        axisLabel.location = 0.5;
-        axisLabel.fill = am4core.color("#ffffff");
-        axisLabel.radius = 3;
-        axisLabel.relativeRotation = 0;
+        hoverState.properties.innerRadius = - 25;
+        hoverState.properties.radius = - 0.01;
     }
 
     update() {

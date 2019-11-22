@@ -2,7 +2,11 @@
 
 @import "preset";
 
-#home-chart-ctnr {
+body {
+    position: relative;
+}
+
+.home-ctnr {
     position: relative;
     display: block;
     width: 100%;
@@ -15,8 +19,20 @@
     background-color:#121212;
 }
 
-#occu-chart-ctnr {
+#home-chart-ctnr {
     position: relative;
+    display: block;
+    width: 100%;
+    width: 100vw;
+    max-width: 100%;
+    min-width: 500px;
+    height: 100%;
+    height: 100vh;
+    min-height: 500px;
+}
+
+.occu-ctnr {
+    position: fixed;
     display: block;
     top: 0;
     width: 100%;
@@ -25,8 +41,23 @@
     min-width: 500px;
     height: 100%;
     height: 100vh;
+    background-color:#121212;
+    transform: translateY(100%);
+    transition: 0.5s transform ease;
+    overflow: hidden;
+}
+
+#occu-chart-ctnr { 
+    position: relative;
+    display: block;
+    width: 100%;
+    width: 100vw;
+    max-width: 100%;
+    min-width: 500px;
+    height: 100%;
+    height: 100vh;
     min-height: 500px;
-    background-color:#ffffff;
+    z-index: 20;
 }
 
 .pulsating {
