@@ -2,7 +2,7 @@ import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import * as am4maps from "@amcharts/amcharts4/maps";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import am4geodata_continentsLow from "@amcharts/amcharts4-geodata/continentsLow";
+import am4geodata_worldLow from "@amcharts/amcharts4-geodata/worldLow";
 
 import {home_line_data} from "./data_line";
 import {home_map_data} from "./data_map";
@@ -32,6 +32,8 @@ class Home {
 
         this.numYears = home_line_data.length;
         this.prevYear = 1998;
+
+        this.planeSVG = "m2,106h28l24,30h72l-44,-133h35l80,132h98c21,0 21,34 0,34l-98,0 -80,134h-35l43,-133h-71l-24,30h-28l15,-47";
     }
 
     init(winW, winH) {
@@ -46,6 +48,38 @@ class Home {
         this.label.valign = "bottom";
         this.label.padding(0, 50, 10, 0);
         this.label.align = "right";
+
+        var labelsContainer = this.container.createChild(am4core.Container);
+        labelsContainer.isMeasured = false;
+        labelsContainer.x = 80;
+        labelsContainer.y = 27;
+        labelsContainer.layout = "horizontal";
+        labelsContainer.zIndex = 10;
+
+        var plane = labelsContainer.createChild(am4core.Sprite);
+        plane.scale = 0.15;
+        plane.path = this.planeSVG;
+        plane.fill = am4core.color("#BB8FCE");
+
+        var title = labelsContainer.createChild(am4core.TextLink);
+        title.text = "Choose your itinerary";
+        title.fill = am4core.color("#BB8FCE");
+        title.fontSize = 13;
+        title.valign = "middle";
+        title.x = 55;
+        title.y = 15;
+        title.isMeasured = false;
+        title.events.on("over", ()=> { plane.fill = am4core.color("#7380E0"); });
+        title.events.on("out", ()=> { plane.fill = am4core.color("#BB8FCE"); });
+        title.events.on("hit", () => {
+            if (currentOrigin == originImageSeries.dataItems.getIndex(0)) {
+                showLines(originImageSeries.dataItems.getIndex(1));
+            } else {
+                showLines(originImageSeries.dataItems.getIndex(0));
+            }
+        })
+
+        
     }
 
     initMapChart() {
@@ -53,7 +87,7 @@ class Home {
         this.mapChart.mouseWheelBehavior = "none";
 
         try {
-            this.mapChart.geodata = am4geodata_continentsLow;
+            this.mapChart.geodata = am4geodata_worldLow;
         } catch (e) {
             this.mapChart.raiseCriticalError({
                 "message": "Map geodata could not be loaded."
