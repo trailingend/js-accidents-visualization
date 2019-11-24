@@ -17,6 +17,39 @@ body {
     height: 100vh;
     min-height: 500px;
     background-color:#121212;
+    .home-modal-ctnr {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(18, 18, 18, 0.7);
+        z-index: 11;
+        opacity: 0;
+        transform: translate(-40%, -44%) scale(0.01, 0.01);
+        transition: all 0.5s ease;
+
+        &.show {
+            opacity: 1;
+            transform: translate(0, 0) scale(1, 1);
+        }
+        
+        .modal-close {
+            margin: 30px 0 0 30px;
+            width: 30px;
+            height: auto;
+            #close-btn {
+                fill: white;
+            }
+
+            &:hover {
+                #close-btn {
+                    fill: #CCCCCC;
+                }
+                cursor: pointer;
+            }
+        }
+    }
 }
 
 #home-chart-ctnr {
@@ -45,6 +78,10 @@ body {
     transform: translateY(100%);
     transition: 0.5s transform ease;
     overflow: hidden;
+
+    &.show {
+        transform: translateY(0);
+    }
 }
 
 #occu-chart-ctnr { 
@@ -84,3 +121,5 @@ body {
         stroke-width: 50px;
     }
 }
+
+@import "dropdown";

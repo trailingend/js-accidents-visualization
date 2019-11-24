@@ -6,6 +6,8 @@ import am4geodata_worldLow from "@amcharts/amcharts4-geodata/worldLow";
 
 import {home_line_data} from "./data_line";
 import {home_map_data} from "./data_map";
+import Dropdown from './dropdown';
+import Detail from './detail';
 
 am4core.ready(() => {
     am4core.useTheme(am4themes_animated);
@@ -17,6 +19,11 @@ class Home {
         this.container = am4core.create("home-chart-ctnr", am4core.Container);
         this.container.width = am4core.percent(100);
         this.container.height = am4core.percent(100);
+        this.modal = document.getElementsByClassName("home-modal-ctnr")[0];
+        this.modalClose = document.getElementsByClassName("modal-close")[0];
+        this.goButton = document.querySelector(".home-drop-btn");
+        this.occuCtnr = document.querySelector(".occu-ctnr");
+        this.detail = undefined;
 
         this.mapChart = undefined;
         this.lineChart = undefined;
@@ -26,6 +33,7 @@ class Home {
         this.occuSeries = undefined;
         this.mapImageSeries = undefined;
         this.sliderContainer = undefined;
+        this.dateAxis = undefined;
         this.slider = undefined;
         this.sliderAnimation = undefined;
         this.playButton = undefined;
@@ -40,6 +48,7 @@ class Home {
         this.initMapChart();
         this.initLineChart();
         this.initLabel();
+        this.addEventListener();
     }
 
     initLabel() {
@@ -72,14 +81,28 @@ class Home {
         title.events.on("over", ()=> { plane.fill = am4core.color("#7380E0"); });
         title.events.on("out", ()=> { plane.fill = am4core.color("#BB8FCE"); });
         title.events.on("hit", () => {
-            if (currentOrigin == originImageSeries.dataItems.getIndex(0)) {
-                showLines(originImageSeries.dataItems.getIndex(1));
-            } else {
-                showLines(originImageSeries.dataItems.getIndex(0));
-            }
-        })
+            this.modal.classList.add("show");
+            var depaDropdown = new Dropdown('depa');
+            depaDropdown.init(4, 8);
+            var destDropdown = new Dropdown('dest');
+            destDropdown.init(4, 8);
+        });
+    }
 
-        
+    addEventListener() {
+        this.modalClose.addEventListener("click", (e) => {
+            this.modal.classList.remove("show");
+        });
+        this.goButton.addEventListener("click", (e) => {
+            this.modal.classList.remove("show");
+            this.stop();
+
+            this.occuCtnr.classList.add("show");
+            if (this.detail === undefined) {
+                this.detail = new Detail();
+                this.detail.init();
+            }
+        });
     }
 
     initMapChart() {
@@ -103,7 +126,7 @@ class Home {
         let polygonSeries = this.mapChart.series.push(new am4maps.MapPolygonSeries());
         polygonSeries.useGeodata = true;
         polygonSeries.mapPolygons.template.fill = am4core.color("#3b3b3b");
-        polygonSeries.mapPolygons.template.strokeOpacity = 0;
+        polygonSeries.mapPolygons.template.strokeOpacity = 0.1;
         polygonSeries.exclude = ["Antarctica"];
 
         this.mapImageSeries = this.mapChart.series.push(new am4maps.MapImageSeries());
@@ -146,22 +169,22 @@ class Home {
 
         this.lineChart.background.fill = gradientFill;
 
-        let dateAxis = this.lineChart.xAxes.push(new am4charts.DateAxis());
-        dateAxis.tooltip.dateFormatter.dateFormat = "YYYY";
-        dateAxis.renderer.inside = false;
-        dateAxis.tooltip.background.pointerLength = 4;
-        dateAxis.tooltip.background.fill = am4core.color("#666666");
-        dateAxis.tooltip.background.stroke = dateAxis.tooltip.background.fill;
-        dateAxis.renderer.ticks.template.disabled = true;
-        dateAxis.renderer.line.disabled = true;
-        dateAxis.renderer.labels.template.fillOpacity = 0.4;
-        dateAxis.renderer.labels.template.fill = am4core.color("#ffffff");
-        dateAxis.renderer.minLabelPosition = 0;
-        dateAxis.renderer.minGridDistance = 30;
-        // dateAxis.renderer.grid.template.strokeDasharray = "3,3";
-        // dateAxis.renderer.grid.template.strokeOpacity = 0.2;
-        dateAxis.renderer.grid.template.location = 0;
-        dateAxis.renderer.grid.template.stroke = am4core.color("#ffffff");
+        this.dateAxis = this.lineChart.xAxes.push(new am4charts.DateAxis());
+        this.dateAxis.tooltip.dateFormatter.dateFormat = "YYYY";
+        this.dateAxis.renderer.inside = false;
+        this.dateAxis.tooltip.background.pointerLength = 4;
+        this.dateAxis.tooltip.background.fill = am4core.color("#666666");
+        this.dateAxis.tooltip.background.stroke = this.dateAxis.tooltip.background.fill;
+        this.dateAxis.renderer.ticks.template.disabled = true;
+        this.dateAxis.renderer.line.disabled = true;
+        this.dateAxis.renderer.labels.template.fillOpacity = 0.4;
+        this.dateAxis.renderer.labels.template.fill = am4core.color("#ffffff");
+        this.dateAxis.renderer.minLabelPosition = 0;
+        this.dateAxis.renderer.minGridDistance = 30;
+        // this.dateAxis.renderer.grid.template.strokeDasharray = "3,3";
+        // this.dateAxis.renderer.grid.template.strokeOpacity = 0.2;
+        this.dateAxis.renderer.grid.template.location = 0;
+        this.dateAxis.renderer.grid.template.stroke = am4core.color("#ffffff");
 
         let valueAxis = this.lineChart.yAxes.push(new am4charts.ValueAxis());
         valueAxis.renderer.ticks.template.disabled = true;
@@ -194,7 +217,6 @@ class Home {
         this.fataSeries.fill = am4core.color("#FF5733");
         this.fataSeries.fillOpacity = 0.7;
         this.fataSeries.strokeWidth = 0;
-        this.fataSeries.tooltipText = "{name}: {valueY}";
 
         this.injuSeries = this.lineChart.series.push(new am4charts.ColumnSeries());
         this.injuSeries.dataFields.dateX = "year";
@@ -203,7 +225,6 @@ class Home {
         this.injuSeries.fill = am4core.color("#FFC300");
         this.injuSeries.fillOpacity = 0.7;
         this.injuSeries.strokeWidth = 0;
-        this.injuSeries.tooltipText = "{name}: {valueY}";
         this.injuSeries.stacked = true;
 
         this.safeSeries = this.lineChart.series.push(new am4charts.ColumnSeries());
@@ -223,8 +244,11 @@ class Home {
         this.occuSeries.strokeWidth = 2;
         this.occuSeries.tensionX = 1;
         this.occuSeries.tensionY = 1;
-        this.occuSeries.tooltipText = "{name}: {valueY}";
-        this.occuSeries.tooltip.background.fillOpacity = 0;
+        this.occuSeries.fill = am4core.color("#BB8FCE");
+        this.occuSeries.tooltipText = `Occurrences: {valueY}
+                                       Fatalities: {fata} 
+                                       Injuries: {inju}`;
+        this.occuSeries.tooltip.background.fillOpacity = 0.4;
         this.occuSeries.tooltip.autoTextColor = false;
         this.occuSeries.tooltip.label.fill = am4core.color("#ffffff");
         this.occuSeries.tooltip.filters.clear();
@@ -235,7 +259,7 @@ class Home {
 
         this.lineChart.cursor = new am4charts.XYCursor();
         this.lineChart.cursor.behavior = "none";
-        this.lineChart.cursor.xAxis = dateAxis;
+        this.lineChart.cursor.xAxis = this.dateAxis;
         this.lineChart.cursor.lineX.strokeOpacity = 0;
         this.lineChart.legend = new am4charts.Legend();
         this.lineChart.legend.labels.template.text = "[{color}]{name}[/]";
@@ -350,13 +374,18 @@ class Home {
                 //         occuItem.hide(500, 0, 0, ["valueY"]);
                 //     }
                 // }
+                let point = this.dateAxis.dateToPoint(new Date("" + (currYear + 1)));
+                this.lineChart.cursor.triggerMove(point, false);
+
                 this.mapImageSeries.data = home_map_data[currCount].images;
             }
         }
     }
 
     resize(winW, winH) {
-
+        if (this.detail != undefined) {
+            this.detail.resize();
+        }
     }
 
     obDesktopToMobile() {

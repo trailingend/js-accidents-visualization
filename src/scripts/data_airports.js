@@ -1,0 +1,2 @@
+export const departures = ['Quebec City', 'Ottawa', 'Montreal', 'Toronto', 'anywhere', 'Vancouver', 'Calgary', 'Victoria', 'Edmonton'];
+export const destinations = ['Quebec City', 'Ottawa', 'Montreal', 'Toronto', 'anywhere', 'Vancouver', 'Calgary', 'Victoria', 'Edmonton'];

@@ -2,7 +2,9 @@ import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
-import {occu_data, categories} from "./data_radar";
+// import {occu_data, categories} from "./data_radar";
+import {occu_data} from "./data_radar";
+import {categories} from "./data_category";
 
 am4core.useTheme(am4themes_animated);
 
@@ -28,8 +30,8 @@ class Detail {
 
     initRadarChart() {
         this.radarChart = this.container.createChild(am4charts.RadarChart);
-        this.radarChart.startAngle = 90 - 180;
-        this.radarChart.endAngle = 90 + 180;
+        this.radarChart.startAngle = 270 - 180;
+        this.radarChart.endAngle = 270 + 180;
         this.radarChart.padding(5,15,5,10)
         this.radarChart.radius = am4core.percent(65);
         this.radarChart.innerRadius = am4core.percent(40);
@@ -147,37 +149,88 @@ class Detail {
             return (checkDepa && checkDest && checkYear && checkTime && checkManu && checkOrga);
         });
 
+        // var data = [];
+        // var i = 0;
+        // var first_reason = undefined;
+        // var last_reason = undefined;
+        // categories.forEach((category) => {
+        //     const cate_name = category.name;
+        //     category.chil.forEach((reas_name)=> {    
+        //         first_reason = (first_reason === undefined) ? reas_name : first_reason;
+        //         last_reason = reas_name;            
+        //         const reasoned_data = target_data.filter((record)=>record["reas"] === reas_name);
+        //         // const reasoned_count = reasoned_data.length;
+        //         if (reasoned_data.length === 0) {
+        //             data.push({
+        //                 "reason": reas_name,
+        //                 "count": null,
+        //                 "summary": null
+        //             });
+        //         } else {
+        //             reasoned_data.forEach((point, index)=> {
+        //                 data.push({
+        //                     "reason": reas_name,
+        //                     "count": index + 1,
+        //                     "summary": point
+        //                 });
+        //             });
+        //         }
+        //     });
+
+        //     this.createRange(cate_name, first_reason, last_reason, i);
+        //     this.createRange2(cate_name, first_reason, last_reason, i);
+
+        //     first_reason = undefined;
+        //     last_reason = undefined;
+        //     i++;
+
         var data = [];
         var i = 0;
         var first_reason = undefined;
         var last_reason = undefined;
-        categories.forEach((category) => {
+        categories.forEach((category, cateIndex) => {
             const cate_name = category.name;
-            category.chil.forEach((reas_name)=> {    
-                first_reason = (first_reason === undefined) ? reas_name : first_reason;
-                last_reason = reas_name;            
-                const reasoned_data = target_data.filter((record)=>record["reas"] === reas_name);
-                // const reasoned_count = reasoned_data.length;
-                if (reasoned_data.length === 0) {
-                    data.push({
-                        "reason": reas_name,
-                        "count": null,
-                        "summary": null
-                    });
-                } else {
-                    reasoned_data.forEach((point, index)=> {
+            var first_subreason = undefined;
+            var last_subreason = undefined;
+            var j = 0;
+
+            category.chil.forEach((subcategory, subIndex) => { 
+                const subcate_name = subcategory.name;
+
+                subcategory.chil.forEach((reas_name, reasIndex) => {
+                    first_subreason = (first_subreason === undefined) ? reas_name : first_subreason;
+                    last_subreason = reas_name;  
+                    first_reason = (first_reason === undefined) ? reas_name : first_reason;
+                    last_reason = reas_name;
+                    if (cate_name === 'Events') {
+                        console.log(first_subreason + " " + last_subreason + " - " + subcate_name)
+                    }
+
+                    const reasoned_data = target_data.filter((record)=>record["reas"] === reas_name);
+                    if (reasoned_data.length === 0) {
                         data.push({
                             "reason": reas_name,
-                            "count": index + 1,
-                            "summary": point
+                            "count": null,
+                            "summary": null
                         });
-                    });
-                }
+                    } else {
+                        reasoned_data.forEach((point, index)=> {
+                            data.push({
+                                "reason": reas_name,
+                                "count": index + 1,
+                                "summary": point
+                            });
+                        });
+                    }
+                });
+
+                this.createOutterRange(subcate_name, first_subreason, last_subreason, j);
+                first_subreason = undefined;
+                last_subreason = undefined;
+                j++;
             });
 
-            this.createRange(cate_name, first_reason, last_reason, i);
-            this.createRange2(cate_name, first_reason, last_reason, i);
-
+            this.createInnerRange(cate_name, first_reason, last_reason, i);
             first_reason = undefined;
             last_reason = undefined;
             i++;
@@ -255,6 +308,95 @@ class Detail {
     
         axisFill.showSystemTooltip = true;
         axisFill.readerTitle = "click to zoom";
+        axisFill.cursorOverStyle = am4core.MouseCursorStyle.pointer;
+    
+        axisFill.events.on("hit", (event) => {
+            var dataItem = event.target.dataItem;
+            if (!event.target.isActive) {
+                this.reasonAxis.zoom({ start: 0, end: 1 });
+            }
+            else {
+                this.reasonAxis.zoomToCategories(dataItem.category, dataItem.endCategory);
+            }
+        })
+    
+        // hover state
+        var hoverState = axisFill.states.create("hover");
+        hoverState.properties.innerRadius = - 25;
+        hoverState.properties.radius = - 0.01;
+    }
+
+    createOutterRange(name, first_reason, last_reason, index) {
+        var axisRange = this.reasonAxis.axisRanges.create();
+        axisRange.axisFill.interactionsEnabled = true;
+        axisRange.text = name;
+        axisRange.category = first_reason;
+        axisRange.endCategory = last_reason;
+        // every 3rd color for a bigger contrast
+        axisRange.axisFill.fill = this.colorSet.getIndex(index * 3);
+        axisRange.grid.disabled = true;
+        axisRange.label.interactionsEnabled = false;
+        axisRange.label.bent = true;
+        axisRange.label.location = 0.5;
+        axisRange.label.fill = am4core.color("#ffffff");
+        axisRange.label.radius = 3;
+        axisRange.label.relativeRotation = 0;
+    
+        var axisFill = axisRange.axisFill;
+        axisFill.innerRadius = -0.01; // almost the same as 100%, we set it in pixels as later we animate this property to some pixel value
+        axisFill.radius = -20; // negative radius means it is calculated from max radius
+        axisFill.disabled = false; // as regular fills are disabled, we need to enable this one
+        axisFill.fillOpacity = 1;
+        axisFill.togglable = true;
+    
+        axisFill.showSystemTooltip = true;
+        axisFill.readerTitle = name;
+        axisFill.cursorOverStyle = am4core.MouseCursorStyle.pointer;
+    
+        axisFill.events.on("hit", (event) => {
+            var dataItem = event.target.dataItem;
+            if (!event.target.isActive) {
+                this.reasonAxis.zoom({ start: 0, end: 1 });
+            } else {
+                this.reasonAxis.zoomToCategories(dataItem.category, dataItem.endCategory);
+            }
+        })
+    
+        // hover state
+        var hoverState = axisFill.states.create("hover");
+        hoverState.properties.innerRadius = -0.01;
+        hoverState.properties.radius = -25;
+    }
+
+    createInnerRange(name, first_reason, last_reason, index) {
+        // console.log(name+"    "+first_reason+"    "+last_reason+"    "+index)
+        var axisRange = this.reasonAxis.axisRanges.create();
+        axisRange.axisFill.interactionsEnabled = true;
+        axisRange.text = name;
+        axisRange.category = first_reason;
+        axisRange.endCategory = last_reason;
+    
+        // every 3rd color for a bigger contrast
+        axisRange.axisFill.fill = this.colorSet.getIndex(index * 2);
+        axisRange.grid.disabled = true;
+        // axisRange.label.text = "TODO";
+        axisRange.label.inside = true;
+        axisRange.label.location = 0.5;
+        axisRange.label.interactionsEnabled = false;
+        axisRange.label.bent = true;
+        axisRange.label.fill = am4core.color("#ffffff");
+        axisRange.label.radius = 7;
+        axisRange.label.relativeRotation = 0;
+    
+        var axisFill = axisRange.axisFill;
+        axisFill.innerRadius = - 20; // almost the same as 100%, we set it in pixels as later we animate this property to some pixel value
+        axisFill.radius = -0.01; // negative radius means it is calculated from max radius
+        axisFill.disabled = false; // as regular fills are disabled, we need to enable this one
+        axisFill.fillOpacity = 0.8;
+        axisFill.togglable = true;
+    
+        axisFill.showSystemTooltip = true;
+        axisFill.readerTitle = name;
         axisFill.cursorOverStyle = am4core.MouseCursorStyle.pointer;
     
         axisFill.events.on("hit", (event) => {

@@ -1,0 +1,89 @@
+.home-drop-ctnr {
+	position: absolute;
+	display: inline-block;
+	vertical-align: bottom;
+	width: 100%;
+    margin: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    
+    .home-drop-text {
+        font-size: 1.2rem;
+        font-weight: 300;
+        text-align: center;
+        letter-spacing: 1px;
+        margin: 0;
+        padding: 0;
+        color: white;
+    }
+
+    .home-drop-line {
+        font-size: 1.2rem;
+        font-weight: 300;
+        text-align: center;
+        letter-spacing: 1px;
+        padding: 0 15px;
+        color: transparent;
+        border-bottom: 1px solid white;
+    }
+
+    .home-drop-btn {
+        padding: 5px 15px;
+        margin: 0 15px;
+        border: 1px solid white;
+        transition: all 0.5s ease;
+
+        &:hover {
+            cursor: pointer;
+            border-color: #6f9cbb;
+	        color: #6f9cbb;
+        }
+    }
+
+    .home-drop-choices {
+        position: absolute;
+
+        .home-drop-list {
+            list-style: none;
+            margin:0;
+            padding: 0;
+            
+            .home-drop-item {
+                font-size: 1.2rem;
+                font-weight: 300;
+                text-align: left;
+                letter-spacing: 1px;
+                line-height: 31px;
+                white-space: nowrap;
+                text-transform: lowercase;
+                color: white;
+                transition: color 0.5s ease;
+
+                &.active {
+                    color: #6f9cbb;
+                }
+            }
+        }
+    }
+
+    
+}
+
+.home-drop-input {
+	color: transparent;
+	border-bottom: 2px solid #6f9cbb;
+	-webkit-transition: all 2s linear;
+	-o-transition: all 2s linear;
+	transition: all 2s linear;
+	white-space: nowrap;
+}
+
+
+
+.home-drop-item:hover {
+	cursor: pointer;
+	color: #6f9cbb;
+	-webkit-transition: color 0.3s linear;
+	-o-transition: color 0.3s linear;
+	transition: color 0.3s linear;
+}

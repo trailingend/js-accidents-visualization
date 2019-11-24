@@ -4,7 +4,7 @@ import { retrieveWindowWidth,
          checkIfMobileToDesktop, 
          testPlatform } from './utils';
 import Home from './home';
-import Detail from './detail';
+
 
 
 const widthLimit = 960;
@@ -22,8 +22,6 @@ window.addEventListener('load', (event) => {
     home = new Home();
     home.init();
 
-    detail = new Detail();
-    detail.init();
     // ================ Main content ends here =================
 
     if (winW <= widthLimit) {
@@ -44,7 +42,6 @@ window.addEventListener('resize', (event) => {
     console.log('=== On Resize ===: (' + newWinW + ", " + newWinH + ")");
     // ================ Resize calls go here =================
     home.resize();
-    detail.resize();
     // ================ Resize calls go here =================
 
     if (ifDToM || ifMToD) {
