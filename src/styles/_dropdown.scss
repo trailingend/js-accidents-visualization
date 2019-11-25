@@ -68,6 +68,11 @@
         color: #6f9cbb;
     }
 }
+.home-drop-ctnr {
+    .drop-item {
+        font-size: 1.2rem;
+    }
+}
 
 .occu-drop-ctnr {
     .drop-item {
@@ -96,7 +101,7 @@
     padding: 10px;
     z-index: 25;
     background: rgb(18,18,18);
-    background: linear-gradient(90deg, rgba(18,18,18, 1) 0%, rgba(255,255,255, 0) 100%);
+    background: linear-gradient(180deg, rgba(18,18,18, 1) 70%, rgba(255,255,255, 0) 100%);
 
     .occu-head-text {
         color: white;
@@ -111,9 +116,17 @@
             padding-right: 15px;
         }
     }
-    .space {
-        opacity: 0;
+    .occu-head-desc {
+        color: rgb(187, 143, 206);
+        text-align: left;
+        font-size: 11px;
+        margin: 0;
+        margin-left: 30px;
     }
+}
+
+.space {
+    opacity: 0;
 }
 
 .occu-drop-ctnr {
@@ -157,4 +170,5 @@
             padding: 0;
         }
     }
+
 }

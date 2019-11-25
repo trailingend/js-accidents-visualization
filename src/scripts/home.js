@@ -84,10 +84,14 @@ class Home {
         title.events.on("out", ()=> { plane.fill = am4core.color("#BB8FCE"); });
         title.events.on("hit", () => {
             this.modal.classList.add("show");
-            this.depaDropdown = new Dropdown('depa');
-            this.depaDropdown.init(4);
-            this.destDropdown = new Dropdown('dest');
-            this.destDropdown.init(4);
+            if (this.depaDropdown === undefined) {
+                this.depaDropdown = new Dropdown('depa');
+                this.depaDropdown.init(4);
+            }
+            if (this.destDropdown === undefined) {
+                this.destDropdown = new Dropdown('dest');
+                this.destDropdown.init(4);
+            }
         });
     }
 
@@ -105,7 +109,8 @@ class Home {
                 console.log("in home 105 " + this.depaDropdown.getCurrentSelection() +" "+ this.destDropdown.getCurrentSelection())
                 this.detail.init(this.depaDropdown.getCurrentSelection(), this.destDropdown.getCurrentSelection());
             } else {
-                this.detail.setAirportFilters(); 
+                this.detail.setAirportFilters(this.depaDropdown.getCurrentSelection(), this.destDropdown.getCurrentSelection()); 
+                this.detail.setData();
             }  
         });
     }

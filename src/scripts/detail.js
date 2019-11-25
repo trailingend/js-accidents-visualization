@@ -19,6 +19,7 @@ class Detail {
         this.occuCtnr = document.querySelector(".occu-ctnr");
         this.modalClose = document.querySelector(".occu-modal-close");
         this.itineraryLabel = document.querySelector("#occu-itin-label");
+        this.timeDesc = document.querySelector("#occu-head-time");
 
         this.radarChart = undefined;   
         this.radarColumn = undefined;
@@ -30,9 +31,9 @@ class Detail {
         
         this.depaFilter = undefined;
         this.destFilter = undefined;
-        this.timeFilter = undefined;
-        this.orgaFilter = undefined;
-        this.manuFilter = undefined;
+        this.timeFilter = "any";
+        this.orgaFilter = "any";
+        this.manuFilter = "any";
         this.timeDropdown = new Dropdown('time');
         this.orgaDropdown = new Dropdown('orga');
         this.manuDropdown = new Dropdown('manu');
@@ -45,13 +46,14 @@ class Detail {
         this.initRadarChart();
         this.addEventListener();
 
-        this.timeDropdown.init(this.getBestTime("2019"));
+        this.timeDropdown.init(0);
         this.orgaDropdown.init(0);
         this.manuDropdown.init(0);
         this.timeFilter = this.timeDropdown.getCurrentSelection();
         this.orgaFilter = this.orgaDropdown.getCurrentSelection();
         this.manuFilter = this.manuDropdown.getCurrentSelection();
 
+        this.timeDesc.innerHTML = "The safest time to travel is " + this.getBestTime("2019");
         this.setAirportFilters(depaName, destName);
         this.setData();
     }
@@ -70,11 +72,11 @@ class Detail {
         } else if (which === "orga") {
             this.orgaFilter = value;
         }
-        console.log(this.depaFilter + " " + this.destFilter + " " +this.timeFilter + " " +this.manuFilter + " " +this.orgaFilter)
+        // console.log(this.depaFilter + " " + this.destFilter + " " +this.timeFilter + " " +this.manuFilter + " " +this.orgaFilter)
         this.radarChart.data = this.generateRadarData(this.depaFilter, 
                                                       this.destFilter, 
                                                       "any", 
-                                                      "any", 
+                                                      this.timeFilter, 
                                                       this.manuFilter, 
                                                       this.orgaFilter);
         // this.radarChart.data = this.generateRadarData("Vancouver", 
@@ -128,7 +130,7 @@ class Detail {
         // value axis
         var valueAxis = this.radarChart.yAxes.push(new am4charts.ValueAxis());
         valueAxis.min = 0;
-        valueAxis.max = 30;
+        valueAxis.max = 20;
         valueAxis.strictMinMax = true;
         valueAxis.tooltip.defaultState.properties.opacity = 0;
         valueAxis.tooltip.animationDuration = 0;
@@ -168,7 +170,15 @@ class Detail {
         dataBullets.circle.propertyFields.radius = 1;
         dataBullets.horizontalCenter = "middle";
         dataBullets.verticalCenter = "middle";
-
+        dataBullets.cursorTooltipEnabled = true;
+        dataBullets.tooltipText = `Date: {summary.year}/{summary.date}
+                                    Departure: {summary.depa}
+                                    Destination: {summary.dest} 
+                                    Fatalities: {summary.fata}
+                                    Injuries: {summary.inju}
+                                    Manufacture: {summary.manu}
+                                    Airline: {summary.orga}
+                                    Reason: {summary.reas}`;
         // this makes columns to be of a different color, depending on value
         // this.radarColumn.heatRules.push({ 
         //     target: this.radarColumn.columns.template, 
@@ -201,7 +211,7 @@ class Detail {
             const checkDepa = (depa === "any") ? true : record["depa"] === depa;
             const checkDest = (dest === "any") ? true : record["dest"] === dest;
             const checkYear = (year == "any") ? true : record["year"] == year;
-            const checkTime = (time == "any") ? true : record["time"] == time;
+            const checkTime = (time == "any") ? true : ("" + record["time"] + ":00") == time;
             const checkManu = (manufacturer === "any") ? true : record["manu"] === manufacturer;
             const checkOrga = (organizer === "any") ? true : record["orga"] === organizer;
             return (checkDepa && checkDest && checkYear && checkTime && checkManu && checkOrga);
@@ -237,6 +247,7 @@ class Detail {
                         });
                     } else {
                         reasoned_data.forEach((point, index)=> {
+                            point.year = "" + point.year;
                             data.push({
                                 "reason": reas_name,
                                 "count": index + 1,
