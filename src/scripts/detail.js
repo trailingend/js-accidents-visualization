@@ -13,6 +13,8 @@ class Detail {
         this.container = am4core.create("occu-chart-ctnr", am4core.Container);
         this.container.width = am4core.percent(100);
         this.container.height = am4core.percent(100);
+        this.occuCtnr = document.querySelector(".occu-ctnr");
+        this.modalClose = document.querySelector(".occu-modal-close");
 
         this.radarChart = undefined;   
         this.radarColumn = undefined;
@@ -21,11 +23,45 @@ class Detail {
         // this.colorSet.list = ["#388E3C", "#FBC02D", "#0288d1", "#F44336", "#8E24AA"].map((color) => {
         //     return new am4core.color(color);
         // });
-
+        this.planeSVG = "m2,106h28l24,30h72l-44,-133h35l80,132h98c21,0 21,34 0,34l-98,0 -80,134h-35l43,-133h-71l-24,30h-28l15,-47";
     }
 
     init(winW, winH) {
+        this.initLabel();
         this.initRadarChart();
+        this.addEventListener();
+    }
+
+    initLabel() {
+        var labelsContainer = this.container.createChild(am4core.Container);
+        labelsContainer.isMeasured = false;
+        labelsContainer.x = 80;
+        labelsContainer.y = 27;
+        labelsContainer.layout = "horizontal";
+        labelsContainer.zIndex = 10;
+
+        var plane = labelsContainer.createChild(am4core.Sprite);
+        plane.scale = 0.15;
+        plane.path = this.planeSVG;
+        plane.fill = am4core.color("#BB8FCE");
+
+        var title = labelsContainer.createChild(am4core.TextLink);
+        title.text = "Choose your itinerary";
+        title.fill = am4core.color("#BB8FCE");
+        title.fontSize = 13;
+        title.valign = "middle";
+        title.x = 55;
+        title.y = 15;
+        title.isMeasured = false;
+        title.events.on("over", ()=> { plane.fill = am4core.color("#7380E0"); });
+        title.events.on("out", ()=> { plane.fill = am4core.color("#BB8FCE"); });
+        // title.events.on("hit", () => {
+        //     this.modal.classList.add("show");
+        //     var depaDropdown = new Dropdown('depa');
+        //     depaDropdown.init(4, 8);
+        //     var destDropdown = new Dropdown('dest');
+        //     destDropdown.init(4, 8);
+        // });
     }
 
     initRadarChart() {
@@ -34,14 +70,14 @@ class Detail {
         this.radarChart.endAngle = 270 + 180;
         this.radarChart.padding(5,15,5,10)
         this.radarChart.radius = am4core.percent(65);
-        this.radarChart.innerRadius = am4core.percent(40);
+        this.radarChart.innerRadius = am4core.percent(20);
 
-        var yearLabel = this.radarChart.radarContainer.createChild(am4core.Label);
-        yearLabel.horizontalCenter = "middle";
-        yearLabel.verticalCenter = "middle";
-        yearLabel.fill = am4core.color("#673AB7");
-        yearLabel.fontSize = 30;
-        yearLabel.text = String("yo");
+        var totalCountLabel = this.radarChart.radarContainer.createChild(am4core.Label);
+        totalCountLabel.horizontalCenter = "middle";
+        totalCountLabel.verticalCenter = "middle";
+        totalCountLabel.fill = am4core.color("#FFFFFF");
+        totalCountLabel.fontSize = 24;
+        totalCountLabel.text = "yo";
        
         // category axis
         this.reasonAxis = this.radarChart.xAxes.push(new am4charts.CategoryAxis());
@@ -70,8 +106,8 @@ class Detail {
 
         // value axis
         var valueAxis = this.radarChart.yAxes.push(new am4charts.ValueAxis());
-        valueAxis.min = 0;
-        valueAxis.max = 8;
+        valueAxis.min = 1;
+        valueAxis.max = 30;
         valueAxis.strictMinMax = true;
         valueAxis.tooltip.defaultState.properties.opacity = 0;
         valueAxis.tooltip.animationDuration = 0;
@@ -81,8 +117,8 @@ class Detail {
         var valueAxisRenderer = valueAxis.renderer;
         valueAxisRenderer.axisFills.template.disabled = true;
         valueAxisRenderer.ticks.template.disabled = true;
-        valueAxisRenderer.minGridDistance = 20;
-        valueAxisRenderer.grid.template.strokeOpacity = 0.2;
+        valueAxisRenderer.minGridDistance = 10;
+        valueAxisRenderer.grid.template.strokeOpacity = 0.1;
         valueAxisRenderer.labels.template.fill = am4core.color("#ffffff");
         valueAxisRenderer.grid.template.stroke = am4core.color("#ffffff");
 
@@ -135,54 +171,19 @@ class Detail {
         cursor.lineX.strokeOpacity = 0;
         cursor.fullWidthLineX = true;
 
-        this.radarChart.data = this.generateRadarData("YVR", "YYZ", 1999, "13", "Boeing", "Air Canada");
+        this.radarChart.data = this.generateRadarData("Vancouver Intl", "Calgary Intl", 2018, "11", "Airbus", "Air Canada");
     }
 
     generateRadarData(depa, dest, year, time, manufacturer, organizer) {
-        const target_data = occu_data.filter((record) => {
-            const checkDepa = record["depa"] === depa;
-            const checkDest = record["dest"] === dest;
-            const checkYear = record["year"] == year;
-            const checkTime = record["time"] == time;
-            const checkManu = record["manu"] === manufacturer;
-            const checkOrga = record["orga"] === organizer;
+        let target_data = occu_data.filter((record) => {
+            const checkDepa = (depa === "any") ? true : record["depa"] === depa;
+            const checkDest = (dest === "any") ? true : record["dest"] === dest;
+            const checkYear = (year == "any") ? true : record["year"] == year;
+            const checkTime = (time == "any") ? true : record["time"] == time;
+            const checkManu = (manufacturer === "any") ? true : record["manu"] === manufacturer;
+            const checkOrga = (organizer === "any") ? true : record["orga"] === organizer;
             return (checkDepa && checkDest && checkYear && checkTime && checkManu && checkOrga);
         });
-
-        // var data = [];
-        // var i = 0;
-        // var first_reason = undefined;
-        // var last_reason = undefined;
-        // categories.forEach((category) => {
-        //     const cate_name = category.name;
-        //     category.chil.forEach((reas_name)=> {    
-        //         first_reason = (first_reason === undefined) ? reas_name : first_reason;
-        //         last_reason = reas_name;            
-        //         const reasoned_data = target_data.filter((record)=>record["reas"] === reas_name);
-        //         // const reasoned_count = reasoned_data.length;
-        //         if (reasoned_data.length === 0) {
-        //             data.push({
-        //                 "reason": reas_name,
-        //                 "count": null,
-        //                 "summary": null
-        //             });
-        //         } else {
-        //             reasoned_data.forEach((point, index)=> {
-        //                 data.push({
-        //                     "reason": reas_name,
-        //                     "count": index + 1,
-        //                     "summary": point
-        //                 });
-        //             });
-        //         }
-        //     });
-
-        //     this.createRange(cate_name, first_reason, last_reason, i);
-        //     this.createRange2(cate_name, first_reason, last_reason, i);
-
-        //     first_reason = undefined;
-        //     last_reason = undefined;
-        //     i++;
 
         var data = [];
         var i = 0;
@@ -203,7 +204,6 @@ class Detail {
                     first_reason = (first_reason === undefined) ? reas_name : first_reason;
                     last_reason = reas_name;
                     if (cate_name === 'Events') {
-                        console.log(first_subreason + " " + last_subreason + " - " + subcate_name)
                     }
 
                     const reasoned_data = target_data.filter((record)=>record["reas"] === reas_name);
@@ -236,94 +236,6 @@ class Detail {
             i++;
         })
         return data;
-    }
-
-    createRange(name, first_reason, last_reason, index) {
-        var axisRange = this.reasonAxis.axisRanges.create();
-        axisRange.axisFill.interactionsEnabled = true;
-        axisRange.text = name;
-        axisRange.category = first_reason;
-        axisRange.endCategory = last_reason;
-        // every 3rd color for a bigger contrast
-        axisRange.axisFill.fill = this.colorSet.getIndex(index * 3);
-        axisRange.grid.disabled = true;
-        axisRange.label.interactionsEnabled = false;
-        axisRange.label.bent = true;
-        axisRange.label.location = 0.5;
-        axisRange.label.fill = am4core.color("#ffffff");
-        axisRange.label.radius = 3;
-        axisRange.label.relativeRotation = 0;
-    
-        var axisFill = axisRange.axisFill;
-        axisFill.innerRadius = -0.01; // almost the same as 100%, we set it in pixels as later we animate this property to some pixel value
-        axisFill.radius = -20; // negative radius means it is calculated from max radius
-        axisFill.disabled = false; // as regular fills are disabled, we need to enable this one
-        axisFill.fillOpacity = 1;
-        axisFill.togglable = true;
-    
-        axisFill.showSystemTooltip = true;
-        axisFill.readerTitle = "click to zoom";
-        axisFill.cursorOverStyle = am4core.MouseCursorStyle.pointer;
-    
-        axisFill.events.on("hit", (event) => {
-            var dataItem = event.target.dataItem;
-            if (!event.target.isActive) {
-                this.reasonAxis.zoom({ start: 0, end: 1 });
-            } else {
-                this.reasonAxis.zoomToCategories(dataItem.category, dataItem.endCategory);
-            }
-        })
-    
-        // hover state
-        var hoverState = axisFill.states.create("hover");
-        hoverState.properties.innerRadius = -0.01;
-        hoverState.properties.radius = -25;
-    }
-
-    createRange2(name, first_reason, last_reason, index) {
-        var axisRange = this.reasonAxis.axisRanges.create();
-        axisRange.axisFill.interactionsEnabled = true;
-        axisRange.text = name;
-        axisRange.category = first_reason;
-        axisRange.endCategory = last_reason;
-    
-        // every 3rd color for a bigger contrast
-        axisRange.axisFill.fill = this.colorSet.getIndex(index * 2);
-        axisRange.grid.disabled = true;
-        axisRange.label.text = "TODO";
-        axisRange.label.inside = true;
-        axisRange.label.location = 0.5;
-        axisRange.label.interactionsEnabled = false;
-        axisRange.label.bent = true;
-        axisRange.label.fill = am4core.color("#ffffff");
-        axisRange.label.radius = 7;
-        axisRange.label.relativeRotation = 0;
-    
-        var axisFill = axisRange.axisFill;
-        axisFill.innerRadius = - 20; // almost the same as 100%, we set it in pixels as later we animate this property to some pixel value
-        axisFill.radius = -0.01; // negative radius means it is calculated from max radius
-        axisFill.disabled = false; // as regular fills are disabled, we need to enable this one
-        axisFill.fillOpacity = 0.8;
-        axisFill.togglable = true;
-    
-        axisFill.showSystemTooltip = true;
-        axisFill.readerTitle = "click to zoom";
-        axisFill.cursorOverStyle = am4core.MouseCursorStyle.pointer;
-    
-        axisFill.events.on("hit", (event) => {
-            var dataItem = event.target.dataItem;
-            if (!event.target.isActive) {
-                this.reasonAxis.zoom({ start: 0, end: 1 });
-            }
-            else {
-                this.reasonAxis.zoomToCategories(dataItem.category, dataItem.endCategory);
-            }
-        })
-    
-        // hover state
-        var hoverState = axisFill.states.create("hover");
-        hoverState.properties.innerRadius = - 25;
-        hoverState.properties.radius = - 0.01;
     }
 
     createOutterRange(name, first_reason, last_reason, index) {
@@ -415,6 +327,11 @@ class Detail {
         hoverState.properties.radius = - 0.01;
     }
 
+    addEventListener() {
+        this.modalClose.addEventListener("click", (e) => {
+            this.occuCtnr.classList.remove("show");
+        });
+    }
     update() {
     }
 
