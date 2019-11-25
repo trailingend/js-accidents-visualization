@@ -23,6 +23,9 @@ class Detail {
         //     return new am4core.color(color);
         // });
         this.planeSVG = "m2,106h28l24,30h72l-44,-133h35l80,132h98c21,0 21,34 0,34l-98,0 -80,134h-35l43,-133h-71l-24,30h-28l15,-47";
+        
+        this.depaFilter = "any";
+        this.destFilter = "any";
     }
 
     init(winW, winH) {
@@ -67,16 +70,16 @@ class Detail {
         this.radarChart = this.container.createChild(am4charts.RadarChart);
         this.radarChart.startAngle = 270 - 180;
         this.radarChart.endAngle = 270 + 180;
-        this.radarChart.padding(5,15,5,10)
+        // this.radarChart.padding(5,15,5,10s)
         this.radarChart.radius = am4core.percent(65);
         this.radarChart.innerRadius = am4core.percent(20);
 
-        var totalCountLabel = this.radarChart.radarContainer.createChild(am4core.Label);
-        totalCountLabel.horizontalCenter = "middle";
-        totalCountLabel.verticalCenter = "middle";
-        totalCountLabel.fill = am4core.color("#FFFFFF");
-        totalCountLabel.fontSize = 24;
-        totalCountLabel.text = "yo";
+        // var totalCountLabel = this.radarChart.radarContainer.createChild(am4core.Label);
+        // totalCountLabel.horizontalCenter = "middle";
+        // totalCountLabel.verticalCenter = "middle";
+        // totalCountLabel.fill = am4core.color("#FFFFFF");
+        // totalCountLabel.fontSize = 24;
+        // totalCountLabel.text = "yo";
        
         // category axis
         this.reasonAxis = this.radarChart.xAxes.push(new am4charts.CategoryAxis());
@@ -105,7 +108,7 @@ class Detail {
 
         // value axis
         var valueAxis = this.radarChart.yAxes.push(new am4charts.ValueAxis());
-        valueAxis.min = 1;
+        valueAxis.min = 0;
         valueAxis.max = 30;
         valueAxis.strictMinMax = true;
         valueAxis.tooltip.defaultState.properties.opacity = 0;
@@ -136,12 +139,13 @@ class Detail {
         dataSeries.name = "Injuries";
         dataSeries.strokeOpacity = 0;
         dataSeries.sequencedInterpolation = true;
-        dataSeries.sequencedInterpolationDelay = 10;
+        dataSeries.sequencedInterpolationDelay = 5;
         let dataBullets = dataSeries.bullets.push(new am4charts.CircleBullet());
         dataBullets.circle.fill = am4core.color("#FFC300");
-        dataBullets.circle.fillOpacity = 0.5;
-        dataBullets.circle.stroke = am4core.color("#FFC300");
-        dataBullets.circle.propertyFields.radius = 4;
+        dataBullets.circle.fillOpacity = 0.8;
+        // dataBullets.circle.stroke = am4core.color("#FFC300");
+        dataBullets.circle.strokeOpacity = 0;
+        dataBullets.circle.propertyFields.radius = 2;
         dataBullets.horizontalCenter = "middle";
         dataBullets.verticalCenter = "middle";
 
@@ -328,11 +332,18 @@ class Detail {
         hoverState.properties.radius = - 0.01;
     }
 
+    setAirportFilters(depaName, destName) {
+        this.depaFilter = depaName;
+        this.destFilter = destName;
+        console.log("in detail - " + this.depaFilter + " " + this.destFilter);
+    }
+
     addEventListener() {
         this.modalClose.addEventListener("click", (e) => {
             this.occuCtnr.classList.remove("show");
         });
     }
+
     update() {
     }
 

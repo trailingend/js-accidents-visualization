@@ -24,6 +24,8 @@ class Home {
         this.goButton = document.querySelector(".home-drop-btn");
         this.occuCtnr = document.querySelector(".occu-ctnr");
         this.detail = undefined;
+        this.depaDropdown = undefined;
+        this.destDropdown = undefined;
 
         this.mapChart = undefined;
         this.lineChart = undefined;
@@ -82,10 +84,10 @@ class Home {
         title.events.on("out", ()=> { plane.fill = am4core.color("#BB8FCE"); });
         title.events.on("hit", () => {
             this.modal.classList.add("show");
-            var depaDropdown = new Dropdown('depa');
-            depaDropdown.init(4, 8);
-            var destDropdown = new Dropdown('dest');
-            destDropdown.init(4, 8);
+            this.depaDropdown = new Dropdown('depa');
+            this.depaDropdown.init(4, 8);
+            this.destDropdown = new Dropdown('dest');
+            this.destDropdown.init(4, 8);
         });
     }
 
@@ -102,6 +104,7 @@ class Home {
                 this.detail = new Detail();
                 this.detail.init();
             }
+            this.detail.setAirportFilters(this.depaDropdown.getCurrentSelection(), this.destDropdown.getCurrentSelection()); 
         });
     }
 
@@ -130,10 +133,15 @@ class Home {
         polygonSeries.exclude = ["Antarctica"];
 
         this.mapImageSeries = this.mapChart.series.push(new am4maps.MapImageSeries());
+        this.mapImageSeries.sequencedInterpolation = true;
+        this.mapImageSeries.sequencedInterpolationDelay = 5;
 
         let mapImageSeriesTemplate = this.mapImageSeries.mapImages.template;
+        mapImageSeriesTemplate.sequencedInterpolation = true;
+        mapImageSeriesTemplate.sequencedInterpolationDelay = 1;
         mapImageSeriesTemplate.propertyFields.latitude = "latitude";
         mapImageSeriesTemplate.propertyFields.longitude = "longitude";
+        
         let circle = mapImageSeriesTemplate.createChild(am4core.Circle);
         circle.radius = 4;
         circle.fillOpacity = 0.7;

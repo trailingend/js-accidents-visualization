@@ -2,7 +2,7 @@ import {departures, destinations} from './data_airports';
 import { TweenMax, TimelineLite, Linear, Power2 } from "gsap/All";
 
 class Dropdown {
-    constructor(alias, elemStrings) {
+    constructor(alias) {
         this.unitH = 31;
         this.alias = alias;
 
@@ -24,7 +24,7 @@ class Dropdown {
     generateDOM() {
         let liText = '';
         this.itemNames.forEach((name)=>{
-            liText += `<li class="home-drop-item">${name}</li>`;
+            liText += `<li class="drop-item">${name}</li>`;
         });
         this.list.innerHTML = liText;
         this.items = Array.from(document.querySelectorAll("#" + this.alias + "-choices li"));
@@ -87,6 +87,11 @@ class Dropdown {
                 item.classList.remove("active");
             }
         });
+    }
+
+    getCurrentSelection() {
+        const name = this.itemNames[this.indexSelected];
+        return (name === 'anywhere' || name === 'anytime') ? 'any' : name;
     }
 }
 export default Dropdown;
