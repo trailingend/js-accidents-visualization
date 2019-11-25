@@ -2,7 +2,6 @@ import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
-// import {occu_data, categories} from "./data_radar";
 import {occu_data} from "./data_radar";
 import {categories} from "./data_category";
 
@@ -171,7 +170,7 @@ class Detail {
         cursor.lineX.strokeOpacity = 0;
         cursor.fullWidthLineX = true;
 
-        this.radarChart.data = this.generateRadarData("Vancouver Intl", "Calgary Intl", 2018, "11", "Airbus", "Air Canada");
+        this.radarChart.data = this.generateRadarData("Vancouver Intl", "Calgary Intl", "any", "11", "Airbus", "Air Canada");
     }
 
     generateRadarData(depa, dest, year, time, manufacturer, organizer) {
@@ -184,6 +183,8 @@ class Detail {
             const checkOrga = (organizer === "any") ? true : record["orga"] === organizer;
             return (checkDepa && checkDest && checkYear && checkTime && checkManu && checkOrga);
         });
+
+        console.log("target data ===" + target_data);        
 
         var data = [];
         var i = 0;
