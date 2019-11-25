@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<meta http-equiv="expires" content="0">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+		<title></title>
+		<link rel="icon" href="../favicon.ico" type="image/x-icon">
+	<link href="styles/style.css" rel="stylesheet"></head>
+	<body class="loading">
+		<div class="home-ctnr">
+			<div id="home-chart-ctnr"></div>
+			<div class="home-modal-ctnr">
+				<div class="modal-close">
+					<svg id="close-btn" x="0px" y="0px" viewBox="0 0 300 300" style="enable-background:new 0 0 300 300;" xml:space="preserve">
+						<polygon points="300,20.9 279.1,0 150,129.1 20.9,0 0,20.9 129.1,150 0,279.1 20.9,300 150,170.9 279.1,300 300,279.1 170.9,150 "/>
+					</svg>
+				</div>
+				<div class="home-drop-ctnr">
+					<p class="home-drop-text">
+						I will depart from 
+						<span id="depa-line" class="home-drop-line">anywhere</span>
+						. My destination is
+						<span id="dest-line" class="home-drop-line">anywhere</span>
+						.
+						<span class="home-drop-btn">See Relavant Events</span>
+					</p>
+					<div id="depa-choices" class="home-drop-choices">
+						<ul class="home-drop-list">
+						</ul>
+					</div>
+					<div id="dest-choices" class="home-drop-choices">
+						<ul class="home-drop-list">
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="occu-ctnr">
+			<div class="maximizer">
+
+					<div id="occu-chart-ctnr"></div>
+					<div class="occu-filter-ctnr">
+						<div class="occu-prompt">
+							<div class="occu-modal-close">
+								<svg id="close-btn" x="0px" y="0px" viewBox="0 0 300 300" style="enable-background:new 0 0 300 300;" xml:space="preserve">
+									<polygon points="300,20.9 279.1,0 150,129.1 20.9,0 0,20.9 129.1,150 0,279.1 20.9,300 150,170.9 279.1,300 300,279.1 170.9,150 "/>
+								</svg>
+							</div>
+							<div class="occu-itin-summary">
+								<svg id="plane-icon" x="0px" y="0px" viewBox="0 0 350 300" style="enable-background:new 0 0 350 300;" xml:space="preserve">
+									<path d="m2,106h28l24,30h72l-44,-133h35l80,132h98c21,0 21,34 0,34l-98,0 -80,134h-35l43,-133h-71l-24,30h-28l15,-47"/>
+								</svg>
+								<p id="occu-itin-label"></p>
+							</div>
+						</div>
+						<div class="occu-head-ctnr">
+							<p class="occu-head-text"> 
+								<span class="occu-drop-head">Time</span><span class="space">1</span>
+								<span class="occu-drop-head">Airline</span><span class="space">22222222222</span>
+								<span class="occu-drop-head">Manufacturer</span><span class="space">33</span>
+							</p>
+							<p id="occu-head-time" class="occu-head-desc"> </p>
+							<p class="occu-head-desc">The airline and manufacturer columns are ranked and displayed in order from the safest.</p>
+						</div>
+		
+						<div class="occu-drop-ctnr">
+							<p class="occu-drop-text"> 
+								<span id="time-line" class="occu-drop-line">00:0</span>
+								<span class="space">.</span>
+								<span id="orga-line" class="occu-drop-line">unknownn airline</span>
+								<span class="space">.</span>
+								<span id="manu-line" class="occu-drop-line">manufacturerr</span>
+								<span class="space">.</span>
+							</p>
+		
+							<div id="time-choices" class="occu-drop-choices">
+								<ul class="occu-drop-list">
+								</ul>
+							</div>
+							<div id="orga-choices" class="occu-drop-choices">
+								<ul class="occu-drop-list">
+								</ul>
+							</div>
+							<div id="manu-choices" class="occu-drop-choices">
+								<ul class="occu-drop-list">
+								</ul>
+							</div>
+							<div class="arrow-right"></div>
+						</div>
+					</div>
+
+			</div>
+
+			<div class="occu-year-bar">
+				<ul class="year-ul">
+					<li class="year-li">1999</li>
+					<li class="year-li">2000</li>
+					<li class="year-li">2001</li>
+					<li class="year-li">2002</li>
+					<li class="year-li">2003</li>
+					<li class="year-li">2004</li>
+					<li class="year-li">2005</li>
+					<li class="year-li">2006</li>
+					<li class="year-li">2007</li>
+					<li class="year-li">2008</li>
+					<li class="year-li">2009</li>
+					<li class="year-li">2010</li>
+					<li class="year-li">2011</li>
+					<li class="year-li">2012</li>
+					<li class="year-li">2013</li>
+					<li class="year-li">2014</li>
+					<li class="year-li">2015</li>
+					<li class="year-li">2016</li>
+					<li class="year-li">2017</li>
+					<li class="year-li">2018</li>
+					<li class="year-li">2019</li>
+					<li class="year-li">any</li>
+				</ul>
+			</div>
+
+		</div>
+	<script type="text/javascript" src="scripts/script.js"></script></body>
+</html>

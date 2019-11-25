@@ -1,7 +1,7 @@
 {
-  "name": "Aviation Accidents Visualization",
+  "name": "js-accidents-visualization",
   "version": "1.0.0",
-  "description": "Data Visualization for Canadian Commercial flights 1999-2019",
+  "description": "Data Visualization for Canadian Commercial Aviation Accidents 1999-2019",
   "main": "index.js",
   "scripts": {
     "build": "npm run clean && webpack --mode=development --progress --hide-modules",
