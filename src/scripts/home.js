@@ -108,6 +108,7 @@ class Home {
                 this.detail = new Detail();
                 console.log("in home 105 " + this.depaDropdown.getCurrentSelection() +" "+ this.destDropdown.getCurrentSelection())
                 this.detail.init(this.depaDropdown.getCurrentSelection(), this.destDropdown.getCurrentSelection());
+                
             } else {
                 this.detail.setAirportFilters(this.depaDropdown.getCurrentSelection(), this.destDropdown.getCurrentSelection()); 
                 this.detail.setData();

@@ -20,6 +20,7 @@ class Detail {
         this.modalClose = document.querySelector(".occu-modal-close");
         this.itineraryLabel = document.querySelector("#occu-itin-label");
         this.timeDesc = document.querySelector("#occu-head-time");
+        this.yearBtnList = document.querySelectorAll(".year-li");
 
         this.radarChart = undefined;   
         this.radarColumn = undefined;
@@ -34,12 +35,11 @@ class Detail {
         this.timeFilter = "any";
         this.orgaFilter = "any";
         this.manuFilter = "any";
+        this.yearFilter = "any";
+        this.yearForRanking = "2019";
         this.timeDropdown = new Dropdown('time');
         this.orgaDropdown = new Dropdown('orga');
         this.manuDropdown = new Dropdown('manu');
-        this.timeDropdown.setCallback(this.setData.bind(this));
-        this.orgaDropdown.setCallback(this.setData.bind(this));
-        this.manuDropdown.setCallback(this.setData.bind(this));
     }
 
     init(depaName, destName) {
@@ -49,11 +49,14 @@ class Detail {
         this.timeDropdown.init(0);
         this.orgaDropdown.init(0);
         this.manuDropdown.init(0);
+        this.timeDropdown.setCallback(this.setData.bind(this));
+        this.orgaDropdown.setCallback(this.setData.bind(this));
+        this.manuDropdown.setCallback(this.setData.bind(this));
         this.timeFilter = this.timeDropdown.getCurrentSelection();
         this.orgaFilter = this.orgaDropdown.getCurrentSelection();
         this.manuFilter = this.manuDropdown.getCurrentSelection();
 
-        this.timeDesc.innerHTML = "The safest time to travel is " + this.getBestTime("2019");
+        this.timeDesc.innerHTML = "The safest time to travel is " + this.getBestTime(this.yearForRanking);
         this.setAirportFilters(depaName, destName);
         this.setData();
     }
@@ -64,6 +67,43 @@ class Detail {
         return time.findIndex(elem => elem == bestTime);
     }
 
+    activateYear(yearList) {
+        // if (yearList.includes("any")) {
+        //     this.yearBtnList.forEach((elem, idx) => {
+        //         if (idx === this.yearBtnList.length - 1) {
+        //             elem.classList.add("active");
+        //         } else {
+        //             elem.classList.remove("active");
+        //         }
+        //     });
+        // } else {
+            this.yearBtnList.forEach((elem) => {
+                if (yearList.includes(elem.innerHTML)) {
+                    elem.classList.add("active");
+                } else {
+                    elem.classList.remove("active");
+                }
+            });
+        // }
+    }
+
+    yearAddListender() {
+        this.yearBtnList.forEach(elem => {
+            if (elem.classList.contains("active")) {
+                elem.addEventListener("click", () => {
+                    this.yearFilter = elem.innerHTML;
+                    // console.log("in year listener " + this.yearFilter);
+                    this.setData();
+                });
+            } else {
+                // console.log("in year listener remove " + elem.innerHTML);
+                elem.removeEventListener("click", () => {
+                    // console.log("removed " + elem.innerHTML);
+                });
+            }
+        });
+    }
+
     setData(which, value) {
         if (which === "time") {
             this.timeFilter = value;
@@ -71,20 +111,29 @@ class Detail {
             this.manuFilter = value;
         } else if (which === "orga") {
             this.orgaFilter = value;
+        } else if (which === "year") {
+            this.yearFilter = value;
         }
-        // console.log(this.depaFilter + " " + this.destFilter + " " +this.timeFilter + " " +this.manuFilter + " " +this.orgaFilter)
-        this.radarChart.data = this.generateRadarData(this.depaFilter, 
-                                                      this.destFilter, 
-                                                      "any", 
-                                                      this.timeFilter, 
-                                                      this.manuFilter, 
-                                                      this.orgaFilter);
-        // this.radarChart.data = this.generateRadarData("Vancouver", 
-        //                                                 "Toronto", 
-        //                                                 "any", 
-        //                                                 "any", 
-        //                                                 "Boeing", 
-        //                                                 "Air Canada");
+        // console.log(this.depaFilter + " " + this.destFilter + " " +this.timeFilter + " " +this.manuFilter + " " +this.orgaFilter);
+        const radarData = this.generateRadarData(this.depaFilter, 
+                                                this.destFilter, 
+                                                this.yearFilter, 
+                                                this.timeFilter, 
+                                                this.manuFilter, 
+                                                this.orgaFilter);
+        let yearBook = [];
+        radarData.forEach(elem => {
+            if (elem.summary) {
+                const radarYesr = elem.summary.year;
+                if (yearBook.indexOf(radarYesr) === -1){
+                    yearBook.push(radarYesr);
+                }
+            }
+        });
+        if (yearBook.length > 0) yearBook.push("any");
+        this.activateYear(yearBook);
+        this.yearAddListender();
+        this.radarChart.data = radarData;
     }    
 
     initRadarChart() {

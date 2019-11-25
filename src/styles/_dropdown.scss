@@ -35,8 +35,8 @@
 
         &:hover {
             cursor: pointer;
-            border-color: #6f9cbb;
-	        color: #6f9cbb;
+            border-color: #BB8FCE;
+	        color: #BB8FCE;
         }
     }
 
@@ -65,7 +65,7 @@
     transition: color 0.5s ease;
 
     &.active {
-        color: #6f9cbb;
+        color: #BB8FCE;
     }
 }
 .home-drop-ctnr {

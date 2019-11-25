@@ -64,6 +64,14 @@ body {
     min-height: 500px;
 }
 
+.maximizer {
+    position: relative;
+    width: 100%;
+    max-width: 1440px;
+    max-height: 800px;
+    margin: 0 auto;
+}
+
 .occu-ctnr {
     position: fixed;
     display: block;
@@ -164,6 +172,37 @@ body {
     z-index: 20;
 }
 
+.occu-year-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 30;
+
+    .year-ul {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        background: #121212;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        list-style-type: none;
+        text-align: center;
+    }
+    .year-li {
+        width: 100%;
+        color: #777777;
+        background: rgba(187, 143, 206, 0.2);
+
+        &.active {
+            color: white;
+            background: rgba(187, 143, 206, 1);
+            cursor: pointer;
+        }
+    }
+}
+
 .pulsating {
     -webkit-animation: am-pulsating 1s ease-out infinite;
     animation: am-pulsating 1s ease-out infinite;
@@ -189,4 +228,18 @@ body {
     }
 }
 
+
 @import "dropdown";
+
+@media only screen and (min-height: 800px) {
+    .maximizer{
+        padding-top: calc((100vh - 800px) / 3);
+    }
+    .occu-drop-ctnr {
+        margin-top: calc((100vh - 800px) / 3);
+    }
+    #occu-chart-ctnr {
+        width: 900px;
+        height: 800px;
+    }
+}

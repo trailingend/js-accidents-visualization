@@ -1,7 +1,7 @@
 {
-  "name": "webpack4-template",
+  "name": "Aviation Accidents Visualization",
   "version": "1.0.0",
-  "description": "Front-end template for webpack 4",
+  "description": "Data Visualization for Canadian Commercial flights 1999-2019",
   "main": "index.js",
   "scripts": {
     "build": "npm run clean && webpack --mode=development --progress --hide-modules",

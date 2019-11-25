@@ -11,40 +11,52 @@ class Dropdown {
         this.list = document.querySelector("#" + alias + "-choices ul");
         this.itemNames = ["any"];
         this.indexSelected = 0;
+        this.maxIndex = this.itemNames.length - 1;
         this.startLoc = 0;
         this.callback = undefined;
-
-
-        if (alias === 'depa') {
-            this.itemNames = departures;
-        } else if (alias === 'dest') {
-            this.itemNames = destinations;
-        } else if (alias === 'orga') {
-            this.itemNames = airlines[airlines.length - 1].map((elem) => { return elem.name;});;
-        } else if (alias === 'manu') {
-            this.itemNames = manufacturers[manufacturers.length - 1].map((elem) => { return elem.name;});
-        } else if (alias === 'time') {
-            this.itemNames = time;
-        }
-        this.maxIndex = this.itemNames.length - 1;
     }
 
     init(defaultIndex) {
-        this.setLeft();
+        this.setupChoices("2019");
+        this.setupPosition();
         this.generateDOM();
-        this.setup(defaultIndex, this.maxIndex);
+        this.setupSelection(defaultIndex, this.maxIndex);
     }
 
     generateDOM() {
+        this.list.innerHTML = "";
+
         let liText = '';
         this.itemNames.forEach((name)=>{
             liText += `<li class="drop-item">${name}</li>`;
         });
+        this.maxIndex = this.itemNames.length - 1;
         this.list.innerHTML = liText;
         this.items = Array.from(document.querySelectorAll("#" + this.alias + "-choices li"));
     }
+
+    resetChoices(yearInput) {
+        const yearForRanking = (yearInput === "any") ? "2019" : yearInput;
+        this.setupChoices("2019");
+        this.generateDOM();
+        this.setupSelection(0, this.maxIndex);
+    }
+
+    setupChoices(yearForRanking) {
+        if (this.alias === 'depa') {
+            this.itemNames = departures;
+        } else if (this.alias === 'dest') {
+            this.itemNames = destinations;
+        } else if (this.alias === 'orga') {
+            this.itemNames = airlines[parseInt(yearForRanking) - 1999].map((elem) => { return elem.name;});;
+        } else if (this.alias === 'manu') {
+            this.itemNames = manufacturers[parseInt(yearForRanking) - 1999].map((elem) => { return elem.name;});
+        } else if (this.alias === 'time') {
+            this.itemNames = time;
+        }
+    }
     
-    setup(defaultIndex, maxIndex) {
+    setupSelection(defaultIndex, maxIndex) {
         this.initialGoTo(defaultIndex);
         this.items.forEach((itemElem, index) => {
             itemElem.addEventListener("click", (e) => {
@@ -53,7 +65,7 @@ class Dropdown {
         });
     }
 
-    setLeft() {
+    setupPosition() {
         TweenMax.to(this.choices, 0.0 , {
             css: { 
                 left: this.line.offsetLeft,
@@ -105,5 +117,7 @@ class Dropdown {
     setCallback(func) {
         this.callback = func;
     }
+
+
 }
 export default Dropdown;
