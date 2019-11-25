@@ -1,4 +1,4 @@
-import {departures, destinations} from './data_airports';
+import {departures, destinations, time, airlines, manufacturers} from './data_filters';
 import { TweenMax, TimelineLite, Linear, Power2 } from "gsap/All";
 
 class Dropdown {
@@ -9,16 +9,29 @@ class Dropdown {
         this.line = document.querySelector("#" + alias + "-line");
         this.choices = document.querySelector("#" + alias + "-choices");
         this.list = document.querySelector("#" + alias + "-choices ul");
-        this.itemNames = (alias === '') ? departures : destinations;
+        this.itemNames = ["any"];
         this.indexSelected = 0;
-
         this.startLoc = 0;
+
+
+        if (alias === 'depa') {
+            this.itemNames = departures;
+        } else if (alias === 'dest') {
+            this.itemNames = destinations;
+        } else if (alias === 'orga') {
+            this.itemNames = airlines[airlines.length - 1].map((elem) => { return elem.name;});;
+        } else if (alias === 'manu') {
+            this.itemNames = manufacturers[manufacturers.length - 1].map((elem) => { return elem.name;});
+        } else if (alias === 'time') {
+            this.itemNames = time;
+        }
+        this.maxIndex = this.itemNames.length - 1;
     }
 
-    init(defaultIndex, maxIndex) {
+    init(defaultIndex) {
         this.setLeft();
         this.generateDOM();
-        this.setup(defaultIndex, maxIndex);
+        this.setup(defaultIndex, this.maxIndex);
     }
 
     generateDOM() {

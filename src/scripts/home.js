@@ -85,9 +85,9 @@ class Home {
         title.events.on("hit", () => {
             this.modal.classList.add("show");
             this.depaDropdown = new Dropdown('depa');
-            this.depaDropdown.init(4, 8);
+            this.depaDropdown.init(4);
             this.destDropdown = new Dropdown('dest');
-            this.destDropdown.init(4, 8);
+            this.destDropdown.init(4);
         });
     }
 

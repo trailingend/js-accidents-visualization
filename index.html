@@ -39,29 +39,41 @@
 		<div class="occu-ctnr">
 			<div id="occu-chart-ctnr"></div>
 			<div class="occu-filter-ctnr">
+				<div class="occu-prompt">
 					<div class="occu-modal-close">
 						<svg id="close-btn" x="0px" y="0px" viewBox="0 0 300 300" style="enable-background:new 0 0 300 300;" xml:space="preserve">
 							<polygon points="300,20.9 279.1,0 150,129.1 20.9,0 0,20.9 129.1,150 0,279.1 20.9,300 150,170.9 279.1,300 300,279.1 170.9,150 "/>
 						</svg>
 					</div>
-					<div class="occu-drop-ctnr">
-							<p class="occu-drop-text"> 
-								<span id="depa-line" class="occu-drop-line">00:00</span>
-								.
-								<span id="depa-line" class="occu-drop-line">organizer</span>
-								.
-								<span id="dest-line" class="occu-drop-line">manufacturer</span>
-								.
-							</p>
-							<div id="depa-choices" class="home-drop-choices">
-								<ul class="home-drop-list">
-								</ul>
-							</div>
-							<div id="dest-choices" class="home-drop-choices">
-								<ul class="home-drop-list">
-								</ul>
-							</div>
-						</div>
+					<div class="occu-itin-summary">
+						<svg id="plane-icon" x="0px" y="0px" viewBox="0 0 350 300" style="enable-background:new 0 0 350 300;" xml:space="preserve">
+							<path d="m2,106h28l24,30h72l-44,-133h35l80,132h98c21,0 21,34 0,34l-98,0 -80,134h-35l43,-133h-71l-24,30h-28l15,-47"/>
+						</svg>
+						<p id="occu-itin-label"></p>
+					</div>
+				</div>
+				<div class="occu-drop-ctnr">
+					<p class="occu-drop-text"> 
+						<span id="time-line" class="occu-drop-line">00:00</span>
+						.
+						<span id="orga-line" class="occu-drop-line">unknown airline</span>
+						.
+						<span id="manu-line" class="occu-drop-line">manufacturer</span>
+						.
+					</p>
+					<div id="time-choices" class="occu-drop-choices">
+						<ul class="occu-drop-list">
+						</ul>
+					</div>
+					<div id="orga-choices" class="occu-drop-choices">
+						<ul class="occu-drop-list">
+						</ul>
+					</div>
+					<div id="manu-choices" class="occu-drop-choices">
+						<ul class="occu-drop-list">
+						</ul>
+					</div>
+				</div>
 			</div>
 		</div>
 	</body>

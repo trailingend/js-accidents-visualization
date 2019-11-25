@@ -5,6 +5,10 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import {occu_data} from "./data_radar";
 import {categories} from "./data_category";
 
+import Dropdown from './dropdown';
+import {time, timeRanking} from './data_filters';
+
+
 am4core.useTheme(am4themes_animated);
 
 class Detail {
@@ -14,6 +18,7 @@ class Detail {
         this.container.height = am4core.percent(100);
         this.occuCtnr = document.querySelector(".occu-ctnr");
         this.modalClose = document.querySelector(".occu-modal-close");
+        this.itineraryLabel = document.querySelector("#occu-itin-label");
 
         this.radarChart = undefined;   
         this.radarColumn = undefined;
@@ -22,49 +27,31 @@ class Detail {
         // this.colorSet.list = ["#388E3C", "#FBC02D", "#0288d1", "#F44336", "#8E24AA"].map((color) => {
         //     return new am4core.color(color);
         // });
-        this.planeSVG = "m2,106h28l24,30h72l-44,-133h35l80,132h98c21,0 21,34 0,34l-98,0 -80,134h-35l43,-133h-71l-24,30h-28l15,-47";
         
-        this.depaFilter = "any";
-        this.destFilter = "any";
+        this.depaFilter = undefined;
+        this.destFilter = undefined;
+        this.timeDropdown = new Dropdown('time');
+        this.orgaDropdown = new Dropdown('orga');
+        this.manuDropdown = new Dropdown('manu');
     }
 
     init(winW, winH) {
-        this.initLabel();
         this.initRadarChart();
         this.addEventListener();
+
+        this.timeDropdown.init(this.getBestTime("2019"));
+        this.orgaDropdown.init(0);
+        this.manuDropdown.init(0);
     }
 
-    initLabel() {
-        var labelsContainer = this.container.createChild(am4core.Container);
-        labelsContainer.isMeasured = false;
-        labelsContainer.x = 80;
-        labelsContainer.y = 27;
-        labelsContainer.layout = "horizontal";
-        labelsContainer.zIndex = 10;
-
-        var plane = labelsContainer.createChild(am4core.Sprite);
-        plane.scale = 0.15;
-        plane.path = this.planeSVG;
-        plane.fill = am4core.color("#BB8FCE");
-
-        var title = labelsContainer.createChild(am4core.TextLink);
-        title.text = "Choose your itinerary";
-        title.fill = am4core.color("#BB8FCE");
-        title.fontSize = 13;
-        title.valign = "middle";
-        title.x = 55;
-        title.y = 15;
-        title.isMeasured = false;
-        title.events.on("over", ()=> { plane.fill = am4core.color("#7380E0"); });
-        title.events.on("out", ()=> { plane.fill = am4core.color("#BB8FCE"); });
-        // title.events.on("hit", () => {
-        //     this.modal.classList.add("show");
-        //     var depaDropdown = new Dropdown('depa');
-        //     depaDropdown.init(4, 8);
-        //     var destDropdown = new Dropdown('dest');
-        //     destDropdown.init(4, 8);
-        // });
+    getBestTime(year) {
+        const bestTimeItem = timeRanking.find(elem => elem.year == year);
+        const bestTime = bestTimeItem.time;
+        console.log(time.findIndex(elem => elem == bestTime))
+        return time.findIndex(elem => elem == bestTime);
     }
+
+    
 
     initRadarChart() {
         this.radarChart = this.container.createChild(am4charts.RadarChart);
@@ -117,11 +104,12 @@ class Detail {
         valueAxis.zIndex = 10;
 
         var valueAxisRenderer = valueAxis.renderer;
+        valueAxisRenderer.fontSize = 11;
         valueAxisRenderer.axisFills.template.disabled = true;
         valueAxisRenderer.ticks.template.disabled = true;
         valueAxisRenderer.minGridDistance = 10;
         valueAxisRenderer.grid.template.strokeOpacity = 0.1;
-        valueAxisRenderer.labels.template.fill = am4core.color("#ffffff");
+        valueAxisRenderer.labels.template.fill = am4core.color("#cccccc");
         valueAxisRenderer.grid.template.stroke = am4core.color("#ffffff");
 
         // series
@@ -145,7 +133,7 @@ class Detail {
         dataBullets.circle.fillOpacity = 0.8;
         // dataBullets.circle.stroke = am4core.color("#FFC300");
         dataBullets.circle.strokeOpacity = 0;
-        dataBullets.circle.propertyFields.radius = 2;
+        dataBullets.circle.propertyFields.radius = 1;
         dataBullets.horizontalCenter = "middle";
         dataBullets.verticalCenter = "middle";
 
@@ -174,7 +162,7 @@ class Detail {
         cursor.lineX.strokeOpacity = 0;
         cursor.fullWidthLineX = true;
 
-        this.radarChart.data = this.generateRadarData("Vancouver Intl", "Calgary Intl", "any", "11", "Airbus", "Air Canada");
+        this.radarChart.data = this.generateRadarData("Vancouver", "Calgary", "any", "11", "Airbus", "Air Canada");
     }
 
     generateRadarData(depa, dest, year, time, manufacturer, organizer) {
@@ -335,7 +323,7 @@ class Detail {
     setAirportFilters(depaName, destName) {
         this.depaFilter = depaName;
         this.destFilter = destName;
-        console.log("in detail - " + this.depaFilter + " " + this.destFilter);
+        this.itineraryLabel.innerHTML = `${depaName} - ${destName}`;
     }
 
     addEventListener() {

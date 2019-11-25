@@ -87,26 +87,63 @@ body {
         position: absolute;
         top: 0;
         left: 0;
-        width: 350px;
+        width: 500px;
         height: 100%;
         transition: all 0.5s ease;
         z-index: 21;
 
-        .occu-modal-close {
+        .occu-prompt {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
             margin: 30px 0 0 30px;
-            width: 30px;
-            height: auto;
-            #close-btn {
-                fill: white;
-            }
-
-            &:hover {
+            
+            .occu-modal-close {
+                width: 30px;
+                height: auto;
                 #close-btn {
-                    fill: #CCCCCC;
+                    fill: white;
                 }
-                cursor: pointer;
+
+                &:hover {
+                    #close-btn {
+                        fill: #CCCCCC;
+                    }
+                    cursor: pointer;
+                }
+            }
+            .occu-itin-summary {
+                display: flex;
+                flex-direction: row;
+                margin-left: 25px;
+    
+                #plane-icon {
+                    width: 55px;
+                    height: auto;
+                    fill: #BB8FCE;
+                    transition: fill 0.2s ease;
+                }
+                #occu-itin-label {
+                    font-size: 13px;
+                    color: #BB8FCE;
+                }
+
+                &:hover {
+                    #occu-itin-label {
+                        color: #7380E0;
+                    }
+                    #plane-icon {
+                        fill: #7380E0;
+                    }
+                }
+            }
+            
+
+            .occu-itin {
+
             }
         }
+        
     }
 }
 
