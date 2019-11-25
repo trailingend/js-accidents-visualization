@@ -102,9 +102,11 @@ class Home {
             this.occuCtnr.classList.add("show");
             if (this.detail === undefined) {
                 this.detail = new Detail();
-                this.detail.init();
-            }
-            this.detail.setAirportFilters(this.depaDropdown.getCurrentSelection(), this.destDropdown.getCurrentSelection()); 
+                console.log("in home 105 " + this.depaDropdown.getCurrentSelection() +" "+ this.destDropdown.getCurrentSelection())
+                this.detail.init(this.depaDropdown.getCurrentSelection(), this.destDropdown.getCurrentSelection());
+            } else {
+                this.detail.setAirportFilters(); 
+            }  
         });
     }
 

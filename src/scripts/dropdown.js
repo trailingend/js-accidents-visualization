@@ -12,6 +12,7 @@ class Dropdown {
         this.itemNames = ["any"];
         this.indexSelected = 0;
         this.startLoc = 0;
+        this.callback = undefined;
 
 
         if (alias === 'depa') {
@@ -44,37 +45,12 @@ class Dropdown {
     }
     
     setup(defaultIndex, maxIndex) {
-        this.goTo(defaultIndex);
+        this.initialGoTo(defaultIndex);
         this.items.forEach((itemElem, index) => {
             itemElem.addEventListener("click", (e) => {
                 this.goTo(index);
             });
         });
-        // ["mousedown", "touchstart"].forEach(evt => {
-        //     this.choices.addEventListener(evt, (e) => {
-        //         this.startLoc = e.clientY;
-        //         console.log("start " + e.clientY)
-        //     });
-        // });
-        // ["mousemove", "touchmove"].forEach(evt => {
-        //     this.choices.addEventListener(evt, (e) => {
-        //         if (this.startLoc != 0) {
-        //             const diff = e.clientY - this.startLoc;
-        //             const offsetIndex = Math.round(diff / 31);
-        //             let calcIndex = this.indexSelected + offsetIndex;
-        //             calcIndex = (calcIndex < 0) ? 0 : calcIndex;
-        //             calcIndex = (calcIndex > maxIndex) ? maxIndex : calcIndex;
-        //             this.goTo(calcIndex);
-        //             console.log("up " + diff + " " + offsetIndex + " " + calcIndex);
-        //         }
-        //     });
-        // });
-        // ["mouseup", "touchend", "touchcancel"].forEach(evt => {
-        //     this.choices.addEventListener(evt, (e) => {
-        //         this.startLoc = 0;
-        //         console.log("reset mouse event");
-        //     });
-        // });
     }
 
     setLeft() {
@@ -85,12 +61,11 @@ class Dropdown {
         });
     }
 
-    goTo(defaultIndex) {
+    initialGoTo(defaultIndex) {
         this.indexSelected = defaultIndex;
         TweenMax.to(this.choices, 0.2 , {
             top: - this.unitH * defaultIndex - 2, 
             ease: Power2.easeOut,
-            // color: "#6f9cbb"
         });
 
         this.items.forEach((item, idx) => {
@@ -102,9 +77,33 @@ class Dropdown {
         });
     }
 
+    goTo(defaultIndex) {
+        this.indexSelected = defaultIndex;
+        TweenMax.to(this.choices, 0.2 , {
+            top: - this.unitH * defaultIndex - 2, 
+            ease: Power2.easeOut,
+        });
+
+        this.items.forEach((item, idx) => {
+            if (idx === defaultIndex) {
+                item.classList.add("active");
+            } else {
+                item.classList.remove("active");
+            }
+        });
+        if (this.callback != undefined) {
+            console.log(this.alias + " - called callback");
+            this.callback(this.alias, this.getCurrentSelection());
+        }
+    }
+
     getCurrentSelection() {
         const name = this.itemNames[this.indexSelected];
         return (name === 'anywhere' || name === 'anytime') ? 'any' : name;
+    }
+
+    setCallback(func) {
+        this.callback = func;
     }
 }
 export default Dropdown;

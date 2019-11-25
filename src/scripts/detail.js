@@ -30,28 +30,60 @@ class Detail {
         
         this.depaFilter = undefined;
         this.destFilter = undefined;
+        this.timeFilter = undefined;
+        this.orgaFilter = undefined;
+        this.manuFilter = undefined;
         this.timeDropdown = new Dropdown('time');
         this.orgaDropdown = new Dropdown('orga');
         this.manuDropdown = new Dropdown('manu');
+        this.timeDropdown.setCallback(this.setData.bind(this));
+        this.orgaDropdown.setCallback(this.setData.bind(this));
+        this.manuDropdown.setCallback(this.setData.bind(this));
     }
 
-    init(winW, winH) {
+    init(depaName, destName) {
         this.initRadarChart();
         this.addEventListener();
 
         this.timeDropdown.init(this.getBestTime("2019"));
         this.orgaDropdown.init(0);
         this.manuDropdown.init(0);
+        this.timeFilter = this.timeDropdown.getCurrentSelection();
+        this.orgaFilter = this.orgaDropdown.getCurrentSelection();
+        this.manuFilter = this.manuDropdown.getCurrentSelection();
+
+        this.setAirportFilters(depaName, destName);
+        this.setData();
     }
 
     getBestTime(year) {
         const bestTimeItem = timeRanking.find(elem => elem.year == year);
         const bestTime = bestTimeItem.time;
-        console.log(time.findIndex(elem => elem == bestTime))
         return time.findIndex(elem => elem == bestTime);
     }
 
-    
+    setData(which, value) {
+        if (which === "time") {
+            this.timeFilter = value;
+        } else if (which === "manu") {
+            this.manuFilter = value;
+        } else if (which === "orga") {
+            this.orgaFilter = value;
+        }
+        console.log(this.depaFilter + " " + this.destFilter + " " +this.timeFilter + " " +this.manuFilter + " " +this.orgaFilter)
+        this.radarChart.data = this.generateRadarData(this.depaFilter, 
+                                                      this.destFilter, 
+                                                      "any", 
+                                                      "any", 
+                                                      this.manuFilter, 
+                                                      this.orgaFilter);
+        // this.radarChart.data = this.generateRadarData("Vancouver", 
+        //                                                 "Toronto", 
+        //                                                 "any", 
+        //                                                 "any", 
+        //                                                 "Boeing", 
+        //                                                 "Air Canada");
+    }    
 
     initRadarChart() {
         this.radarChart = this.container.createChild(am4charts.RadarChart);
@@ -161,11 +193,10 @@ class Detail {
         cursor.lineX.fill = am4core.color("#ffffff");
         cursor.lineX.strokeOpacity = 0;
         cursor.fullWidthLineX = true;
-
-        this.radarChart.data = this.generateRadarData("Vancouver", "Calgary", "any", "11", "Airbus", "Air Canada");
     }
 
     generateRadarData(depa, dest, year, time, manufacturer, organizer) {
+        console.log(depa+ " " +dest+ " " +year+ " " +time+ " " +manufacturer+ " " +organizer)
         let target_data = occu_data.filter((record) => {
             const checkDepa = (depa === "any") ? true : record["depa"] === depa;
             const checkDest = (dest === "any") ? true : record["dest"] === dest;
@@ -175,8 +206,6 @@ class Detail {
             const checkOrga = (organizer === "any") ? true : record["orga"] === organizer;
             return (checkDepa && checkDest && checkYear && checkTime && checkManu && checkOrga);
         });
-
-        console.log("target data ===" + target_data);        
 
         var data = [];
         var i = 0;
